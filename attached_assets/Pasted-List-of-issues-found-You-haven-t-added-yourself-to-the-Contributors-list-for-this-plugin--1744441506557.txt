@@ -1,0 +1,176 @@
+List of issues found
+
+
+## You haven't added yourself to the "Contributors" list for this plugin.
+
+In your readme file, the "Contributors" parameter is a case-sensitive, comma-separated list of all WordPress.org usernames that have contributed to the code.
+
+Your username is not in this list, you need to add yourself if you want to appear listed as a contributor to this plugin.
+
+If you don't want to appear that's fine, this is not mandatory, we're warning you just in case.
+
+Analysis result:
+
+# WARNING: None of the listed contributors "Mira" is the WordPress.org username of the owner of the plugin "miiira".
+
+## Use wp_enqueue commands
+
+Your plugin is not correctly including JS and/or CSS. You should be using the built in functions for this:
+
+When including JavaScript code you can use:
+wp_register_script() and wp_enqueue_script() to add JavaScript code from a file.
+wp_add_inline_script() to add inline JavaScript code to previous declared scripts.
+
+When including CSS you can use:
+wp_register_style() and wp_enqueue_style() to add CSS from a file.
+wp_add_inline_style() to add inline CSS to previously declared CSS.
+
+Note that as of WordPress 6.3, you can easily pass attributes like defer or async: https://make.wordpress.org/core/2023/07/14/registering-scripts-with-async-and-defer-attributes-in-wordpress-6-3/
+
+Also, as of WordPress 5.7, you can pass other attributes by using this functions and filters: https://make.wordpress.org/core/2021/02/23/introducing-script-attributes-related-functions-in-wordpress-5-7/
+
+If you're trying to enqueue on the admin pages you'll want to use the admin enqueues.
+
+https://developer.wordpress.org/reference/hooks/admin_enqueue_scripts/
+https://developer.wordpress.org/reference/hooks/admin_print_scripts/
+https://developer.wordpress.org/reference/hooks/admin_print_styles/
+
+Example(s) from your plugin:
+gform-spam-slayer.php:216 <script>
+
+
+## Don't Force Set PHP Limits Globally
+
+While many plugins can need optimal settings for PHP, we ask you please not set them as global defaults.
+
+Having defines like ini_set('memory_limit', '-1'); run globally (like on init or in the __construct() part of your code) means you'll be running that for everything on the site, which may cause your users to fall out of compliance with any limits or restrictions on their host.
+
+If you must use those, you need to limit them specifically to only the exact functions that require them.
+
+Example(s) from your plugin:
+gform-spam-slayer.php:525 set_time_limit(30);
+gform-spam-slayer.php:471 set_time_limit(30);
+
+
+## Using load_plugin_textdomain() for loading the plugin translations is not needed for WordPress.org directory since WordPress 4.6.
+
+When your plugin is hosted on WordPress.org you don't longer need to include load_plugin_textdomain() for the translations under your plugin slug "gform-spam-slayer".
+
+Therefore you can remove that call, WordPress will automatically load the translations for you when needed.
+
+If you still support older WordPress versions you'll need to keep it, but please make sure to have the function call in a hook such as init to avoid issues for loading them too early. More information: https://make.wordpress.org/core/2024/10/21/i18n-improvements-6-7/.
+
+From your plugin:
+gform-spam-slayer.php:20 load_plugin_textdomain('gform-spam-slayer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+
+
+## Nonces and User Permissions Needed for Security
+
+Please add a nonce check to your input calls ($_POST, $_GET, $REQUEST) to prevent unauthorized access.
+
+If you use wp_ajax_ to trigger submission checks, remember they also need a nonce check.
+
+👮 Checking permissions: Keep in mind, a nonce check alone is not bulletproof security. Do not rely on nonces for authorization purposes. When needed, use it together with current_user_can() in order to prevent users without the right permissions from accessing things they shouldn't.
+
+Also make sure that the nonce logic is correct by making sure it cannot be bypassed. Checking the nonce with current_user_can() is great, but mixing it with other checks can make the condition more complex and, without realising it, bypassable, remember that anything can be sent through an input, don't trust any input.
+
+Keep performance in mind. Don't check for post submission outside of functions. Doing so means that the check will run on every single load of the plugin, which means that every single person who views any page on a site using your plugin will be checking for a submission. This will make your code slow and unwieldy for users on any high traffic site, leading to instability and eventually crashes.
+
+The following links may assist you in development:
+
+https://developer.wordpress.org/plugins/security/nonces/
+https://developer.wordpress.org/plugins/javascript/ajax/#nonce
+https://developer.wordpress.org/plugins/settings/settings-api/
+
+From your plugin:
+gform-spam-slayer.php:245 No nonce check was found validating the origin of inputs in the lines 245-250 - in the context of the function gform_spam_slayer_load_fields()
+# ↳ Line 250: $form_id = intval($_POST['form_id']);
+
+
+## Data Must be Sanitized, Escaped, and Validated
+
+When you include POST/GET/REQUEST/FILE calls in your plugin, it's important to sanitize, validate, and escape them. The goal here is to prevent a user from accidentally sending trash data through the system, as well as protecting them from potential security issues.
+
+SANITIZE: Data that is input (either by a user or automatically) must be sanitized as soon as possible. This lessens the possibility of XSS vulnerabilities and MITM attacks where posted data is subverted.
+
+VALIDATE: All data should be validated, no matter what. Even when you sanitize, remember that you don’t want someone putting in ‘dog’ when the only valid values are numbers.
+
+ESCAPE: Data that is output must be escaped properly when it is echo'd, so it can't hijack admin screens. There are many esc_*() functions you can use to make sure you don't show people the wrong data.
+
+To help you with this, WordPress comes with a number of sanitization and escaping functions. You can read about those here:
+
+https://developer.wordpress.org/apis/security/sanitizing/
+https://developer.wordpress.org/apis/security/escaping/
+
+Remember: You must use the most appropriate functions for the context. If you’re sanitizing email, use sanitize_email(), if you’re outputting HTML, use wp_kses_post(), and so on.
+
+An easy mantra here is this:
+
+Sanitize early
+Escape Late
+Always Validate
+
+Clean everything, check everything, escape everything, and never trust the users to always have input sane data. After all, users come from all walks of life.
+
+Example(s) from your plugin:
+gform-spam-slayer.php:291 if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'gform-spam-slayer-nonce')) {
+
+
+Note: When checking a nonce using wp_verify_nonce you will need to sanitize the input using wp_unslash AND sanitize_text_field , this is because this function is pluggable, and extenders should not trust its input values.
+
+Example:
+if ( ! isset( $_POST['prefix_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash ( $_POST['prefix_nonce'] ) ) , 'prefix_nonce' ) )
+
+Example(s) from your plugin:
+gform-spam-slayer.php:291 if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'gform-spam-slayer-nonce')) {
+
+✔️ You can check this using Plugin Check.
+
+## Generic function/class/define/namespace/option names
+
+All plugins must have unique function names, namespaces, defines, class and option names. This prevents your plugin from conflicting with other plugins or themes. We need you to update your plugin to use more unique and distinct names.
+
+A good way to do this is with a prefix. For example, if your plugin is called "GForm Spam Slayer" then you could use names like these:
+function gforspsl_save_post(){ ... }
+class GFORSPSL_Admin { ... }
+update_option( 'gforspsl_settings', $settings );
+define( 'GFORSPSL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+global $gforspsl_options;
+namespace miiira\gformspamslayer;
+
+Disclaimer: These are just examples that may have been self-generated from your plugin name, we trust you can find better options. If you have a good alternative, please use it instead, this is just an example.
+
+Don't try to use two (2) or three (3) letter prefixes anymore. We host nearly 100-thousand plugins on WordPress.org alone. There are tens of thousands more outside our servers. Believe us, you’re going to run into conflicts.
+
+You also need to avoid the use of __ (double underscores), wp_ , or _ (single underscore) as a prefix. Those are reserved for WordPress itself. You can use them inside your classes, but not as stand-alone function.
+
+Please remember, if you're using _n() or __() for translation, that's fine. We're only talking about functions you've created for your plugin, not the core functions from WordPress. In fact, those core features are why you need to not use those prefixes in your own plugin! You don't want to break WordPress for your users.
+
+Related to this, using if (!function_exists('NAME')) { around all your functions and classes sounds like a great idea until you realize the fatal flaw. If something else has a function with the same name and their code loads first, your plugin will break. Using if-exists should be reserved for shared libraries only.
+
+Remember: Good prefix names are unique and distinct to your plugin. This will help you and the next person in debugging, as well as prevent conflicts.
+
+Analysis result:
+# This plugin is using the prefix "gform_spam" for 12 element(s).
+
+# Cannot use "process" as a prefix.
+gform-spam-slayer.php:354 function process_spam_finding
+gform-spam-slayer.php:467 function process_spam_marking
+gform-spam-slayer.php:521 function process_spam_deletion
+
+
+👉 Your next steps
+
+Please, before replying make sure to perform the following actions:
+Read this email.
+Take the time to understand the issues shared, check the included examples, check the documentation, research the issue on internet, and gain a better understanding of what's happening and how you can fix it. We want you to thoroughly understand these issues so that you can take them into account when maintaining your plugin in the future.
+Note that there may be false positives - we are humans and make mistakes, we apologize if there is anything we have gotten wrong.
+If you have doubts you can ask us for clarification, when asking us please be clear, concise, direct and include an example.
+You can make use of tools like PHPCS or Plugin Check to further help you with finding all the issues.
+Fix your plugin.
+Test your plugin on a clean WordPress installation. You can try Playground.
+Go to "Add your plugin" and upload an updated version of this plugin. You can update the code there whenever you need to, along the review process, and we will check the latest version.
+Reply to this email telling us that you have updated it, and let us know if there is anything we need to know or have in mind.
+Please do not list the changes made as we will review the whole plugin again, just share anything you want to clarify.
+
+ℹ️ To make this process as quick as possible and to avoid burden on the volunteers devoting their time to review this plugin's code, we ask you to thoroughly check all shared issues and fix them before sending the code back to us. I know we already asked you to do so, and it is because we are really trying to make it very clear.
