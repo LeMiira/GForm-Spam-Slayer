@@ -1,0 +1,62 @@
+/* Plugin: GForm Spam Slayer
+   Description: Styles for the GForm Spam Slayer plugin.
+   Author: Mira
+   Author URI: https://github.com/LeMiira
+*/
+
+/* General Styles */
+.wrap {
+    margin: 20px;
+}
+
+/* Style for regex pattern examples */
+#pattern-example {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Styles for entries */
+.gform-spam-slayer-entry {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.gform-spam-slayer-spam-entry {
+    border: 1px solid red;
+}
+
+.gform-spam-slayer-spam-label {
+    color: red;
+}
+
+.gform-spam-slayer-spam-count {
+    color: red;
+}
+
+.gform-spam-slayer-spam-match {
+    color: red;
+}
+
+.gform-spam-slayer-error {
+    color: red;
+}
+
+.gform-spam-slayer-warning {
+    color: orange;
+}
+
+/* Styles for debug results */
+#debug-results {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    height: 500px;
+    overflow-y: scroll;
+    display: none; /* Hidden by default */
+}
