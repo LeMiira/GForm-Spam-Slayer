@@ -467,8 +467,10 @@ function process_spam_finding( $form_id, $fields_to_check, $limit = 0, $regex_pa
 function process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
     global $wpdb;
 
-    // Set a maximum execution time to prevent server overload
-    set_time_limit(30); // 30 seconds
+    // Only set time limit for this specific operation if allowed
+    if (strpos(ini_get('disable_functions'), 'set_time_limit') === false) {
+        set_time_limit(30); // 30 seconds
+    }
 
     $marked_count = 0;
     $batch_size = 50; // Process entries in batches
@@ -521,8 +523,10 @@ function process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
 function process_spam_deletion( $form_id ) {
     global $wpdb;
 
-    // Set a maximum execution time to prevent server overload
-    set_time_limit(30); // 30 seconds
+    // Only set time limit for this specific operation if allowed
+    if (strpos(ini_get('disable_functions'), 'set_time_limit') === false) {
+        set_time_limit(30); // 30 seconds
+    }
 
     $deleted_count = 0;
     $batch_size = 50; // Process entries in batches

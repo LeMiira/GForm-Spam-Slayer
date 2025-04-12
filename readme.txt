@@ -1,5 +1,5 @@
 === GForm Spam Slayer ===
-Contributors: Mira
+Contributors: miiira
 Tags: gravity forms, spam, management
 Requires at least: 5.0
 Tested up to: 6.7
