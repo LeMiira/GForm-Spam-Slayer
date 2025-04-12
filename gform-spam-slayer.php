@@ -14,11 +14,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Load plugin textdomain
-add_action('plugins_loaded', 'gform_spam_slayer_load_textdomain');
-function gform_spam_slayer_load_textdomain() {
-    load_plugin_textdomain('gform-spam-slayer', false, dirname(plugin_basename(__FILE__)) . '/languages/');
-}
+// Plugin text domain is automatically loaded by WordPress.org
 
 // Add the plugin menu to the WordPress admin tools section
 add_action('admin_menu', 'gform_spam_slayer_add_admin_menu');
@@ -40,30 +36,31 @@ function gform_spam_slayer_enqueue_admin_scripts($hook) {
         return;
     }
 
-    // Enqueue jQuery (WordPress includes it by default)
-    wp_enqueue_script('jquery');
-
-    // Enqueue admin.js script
-    wp_enqueue_script(
-        'gform-spam-slayer-admin',
+    // Register and enqueue admin scripts and styles only on plugin page
+    $version = '1.0';
+    
+    wp_register_script(
+        'gforspsl-admin', 
         plugin_dir_url(__FILE__) . 'js/admin.js',
-        array('jquery'), // Ensure jQuery is loaded first
-        '1.0',
-        true // Load in footer
+        array('jquery'),
+        $version,
+        true
     );
-
-    // Pass AJAX URL to the script
-    wp_localize_script('gform-spam-slayer-admin', 'gform_spam_slayer_params', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('gform-spam-slayer-nonce')
-    ));
-
-    wp_enqueue_style(
-        'gform-spam-slayer-styles',
+    
+    wp_register_style(
+        'gforspsl-styles',
         plugin_dir_url(__FILE__) . 'css/style.css',
         array(),
-        '1.0'
+        $version
     );
+
+    wp_enqueue_script('gforspsl-admin');
+    wp_enqueue_style('gforspsl-styles');
+
+    wp_localize_script('gforspsl-admin', 'gforspsl_params', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('gforspsl-nonce')
+    ));
 }
 
 // Render the admin page for the plugin
@@ -287,9 +284,14 @@ function gform_spam_slayer_load_fields() {
 // AJAX handler for the main form submission
 add_action('wp_ajax_gform_spam_slayer_process_form', 'gform_spam_slayer_process_form');
 function gform_spam_slayer_process_form() {
-    // Verify nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'gform-spam-slayer-nonce')) {
-        wp_send_json_error(__('Invalid nonce.', 'gform-spam-slayer'));
+    // Verify nonce and user capabilities
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Insufficient permissions.', 'gform-spam-slayer'));
+        return;
+    }
+
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'gforspsl-nonce')) {
+        wp_send_json_error(__('Invalid security token.', 'gform-spam-slayer'));
         return;
     }
 
@@ -351,7 +353,7 @@ function gform_spam_slayer_process_form() {
  *
  * @return string HTML output of spam detection results
  */
-function process_spam_finding( $form_id, $fields_to_check, $limit = 0, $regex_pattern = '/^[a-zA-Z0-9]{15,}$/' ) {
+function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, $regex_pattern = '/^[a-zA-Z0-9]{15,}$/' ) {
 
     // Validation to ensure arguments are of expected data type
     if ( ! is_int( $form_id ) ) {
@@ -464,7 +466,7 @@ function process_spam_finding( $form_id, $fields_to_check, $limit = 0, $regex_pa
  *
  * @return string HTML output of spam marking results
  */
-function process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
+function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
     global $wpdb;
 
     // Only set time limit for this specific operation if allowed
@@ -520,7 +522,7 @@ function process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
  *
  * @return string HTML output of spam deletion results
  */
-function process_spam_deletion( $form_id ) {
+function gforspsl_process_spam_deletion( $form_id ) {
     global $wpdb;
 
     // Only set time limit for this specific operation if allowed
