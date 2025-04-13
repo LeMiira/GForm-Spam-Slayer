@@ -499,6 +499,7 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
             }else{
+                /* translators: %s: Entry ID */
                 $error = new WP_Error('invalid_entry', sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
             }
             /*} catch (Exception $e) {
@@ -555,6 +556,7 @@ function gforspsl_process_spam_deletion( $form_id ) {
                 GFAPI::delete_entry( $entry_id );
                 $deleted_count++;
             }else{
+                /* translators: %s: Entry ID */
                 $error = new WP_Error('invalid_entry', sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
             }
         /*} catch (Exception $e) {
