@@ -552,8 +552,15 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
             } catch (Exception $e) {
-                error_log("[GForm Spam Slayer] Error marking entry ".$entry_id." as spam: ".$e->getMessage());
+                
+                  if (WP_DEBUG_LOG) {
+                    // translators: %1$s is the entry ID, %2$s is the error message
+                    $error_message = sprintf('[GForm Spam Slayer] Error marking entry %1$s: %2$s', $entry_id, $e->getMessage());
+                    wp_error_log($error_message);
+                }
                 continue;
+                
+              
             }
         } // inner foreach (entries in chunk)
 
@@ -606,8 +613,13 @@ function gforspsl_process_spam_deletion( $form_id ) {
                 GFAPI::delete_entry( $entry_id );
                 $deleted_count++;
             } catch (Exception $e) {
-                error_log("[GForm Spam Slayer] Error deleting entry ".$entry_id.": ".$e->getMessage());
+                     if (WP_DEBUG_LOG) {
+                    // translators: %1$s is the entry ID, %2$s is the error message
+                    $error_message = sprintf('[GForm Spam Slayer] Error deleting entry %1$s: %2$s', $entry_id, $e->getMessage());
+                    wp_error_log($error_message);
+                }
                 continue;
+               
             }
         } // inner foreach (entries in chunk)
     } // outer foreach (chunks)
