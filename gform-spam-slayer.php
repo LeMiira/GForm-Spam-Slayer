@@ -340,7 +340,7 @@ function gform_spam_slayer_process_form() {
         case 'find_spam':
         case 'test_spam':
             $limit = ($sub_action === 'test_spam') ? 10 : 0;
-            $result = process_spam_finding($form_id, $fields_to_check, $limit, $effective_pattern);
+            $result = gforspsl_process_spam_finding($form_id, $fields_to_check, $limit, $effective_pattern);
             break;
         case 'mark_spam':
             $result = process_spam_marking($form_id, $fields_to_check, $effective_pattern);
