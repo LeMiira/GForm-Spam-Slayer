@@ -92,6 +92,12 @@ function gform_spam_slayer_render_admin_page() {
 
     // Predefined Regex Patterns
     $regex_patterns = array(
+        'gibberish_mix' => array(
+            'pattern' => '/^[a-z][0-9][a-z0-9]{8,}$/i',
+            'description' => __('Letter-Number-Mix pattern (like asad5gbgfbdsz)', 'gform-spam-slayer'),
+            'example' => 'asad5gbgfbdsz',
+            'hit_test' => true
+        ),
         'alphanumeric' => array(
             'pattern' => '/^[a-zA-Z0-9]{15,}$/',
             'description' => __('Alphanumeric characters only, 15 or more characters', 'gform-spam-slayer'),
