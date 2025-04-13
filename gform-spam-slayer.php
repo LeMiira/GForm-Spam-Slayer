@@ -57,7 +57,7 @@ function gform_spam_slayer_enqueue_admin_scripts($hook) {
     wp_enqueue_script('gforspsl-admin');
     wp_enqueue_style('gforspsl-styles');
 
-    wp_localize_script('gforspsl-admin', 'gforspsl_params', array(
+    wp_localize_script('gforspsl-admin', 'gform_spam_slayer_params', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('gforspsl-nonce')
     ));
