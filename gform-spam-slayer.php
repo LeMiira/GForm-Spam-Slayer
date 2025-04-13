@@ -519,20 +519,16 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
 
     foreach ( $entry_id_chunks as $entry_id_chunk ) {
         foreach ( $entry_id_chunk as $entry_id ) {
-            //try {
-            if(is_numeric($entry_id)){
+            try {
+                if(!is_numeric($entry_id)) {
+                    throw new Exception(sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
+                }
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
-            }else{
-                /* translators: %s: Entry ID */
-                $error = new WP_Error('invalid_entry', sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
+            } catch (Exception $e) {
+                error_log("[GForm Spam Slayer] Error marking entry ".$entry_id." as spam: ".$e->getMessage());
+                continue;
             }
-            /*} catch (Exception $e) {
-                error_log("Error marking entry ".$entry_id." as spam: ".$e->getMessage());
-                // Potentially handle the error (e.g., log it, skip the entry, etc.)
-                continue; // Skip to the next entry
-            }*/
-
         } // inner foreach (entries in chunk)
 
     } // outer foreach (chunks)
@@ -576,19 +572,16 @@ function gforspsl_process_spam_deletion( $form_id ) {
 
     foreach ( $entry_id_chunks as $entry_id_chunk ) {
         foreach ( $entry_id_chunk as $entry_id ) {
-           // try{
-            if(is_numeric($entry_id)){
+            try {
+                if(!is_numeric($entry_id)) {
+                    throw new Exception(sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
+                }
                 GFAPI::delete_entry( $entry_id );
                 $deleted_count++;
-            }else{
-                /* translators: %s: Entry ID */
-                $error = new WP_Error('invalid_entry', sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
+            } catch (Exception $e) {
+                error_log("[GForm Spam Slayer] Error deleting entry ".$entry_id.": ".$e->getMessage());
+                continue;
             }
-        /*} catch (Exception $e) {
-                error_log("Error deleting entry ".$entry_id.": ".$e->getMessage());
-                // Potentially handle the error (e.g., log it, skip the entry, etc.)
-                continue; // Skip to the next entry
-            }*/
         } // inner foreach (entries in chunk)
     } // outer foreach (chunks)
 
