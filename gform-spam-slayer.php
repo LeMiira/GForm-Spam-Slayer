@@ -240,8 +240,20 @@ function gform_spam_slayer_render_admin_page() {
 // Function to load fields via AJAX
 add_action('wp_ajax_gform_spam_slayer_load_fields', 'gform_spam_slayer_load_fields');
 function gform_spam_slayer_load_fields() {
+    // Check nonce and permissions
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(__('Insufficient permissions.', 'gform-spam-slayer'));
+        return;
+    }
+
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'gforspsl-nonce')) {
+        wp_send_json_error(__('Invalid security token.', 'gform-spam-slayer'));
+        return;
+    }
+
     if (!isset($_POST['form_id'])) {
         wp_send_json_error(__('Invalid request', 'gform-spam-slayer'));
+        return;
     }
 
     $form_id = intval($_POST['form_id']);
@@ -381,17 +393,21 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
         'status' => 'active' // Only get entries with a status of "active" (not spam)
     );
 
-    $entries = GFAPI::get_entries(
-        $form_id,
-        $search_criteria, // Pass the search criteria
-        [
-            'paging' => $paging,
-            'sorting' => [ 'key' => 'id', 'direction' => 'DESC' ],
-        ]
-    );
+    try {
+        $entries = GFAPI::get_entries(
+            $form_id,
+            $search_criteria, // Pass the search criteria
+            [
+                'paging' => $paging,
+                'sorting' => [ 'key' => 'id', 'direction' => 'DESC' ],
+            ]
+        );
 
-    if ( empty( $entries ) ) {
-        return '<p>No entries found for form ID ' . esc_html( $form_id ) . '.</p>';
+        if ( empty( $entries ) ) {
+            return '<div class="gform-spam-slayer-notice"><p>' . esc_html__('There are no entries yet for this form. Please add some entries first.', 'gform-spam-slayer') . '</p></div>';
+        }
+    } catch (Exception $e) {
+        return '<div class="gform-spam-slayer-error"><p>' . esc_html__('Error retrieving entries. Please try again.', 'gform-spam-slayer') . '</p></div>';
     }
 
     foreach ( $entries as $entry ) {
