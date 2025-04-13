@@ -1,16 +1,17 @@
+
 === GForm Spam Slayer ===
-A powerful tool to detect and manage spam entries in Gravity Forms submissions.
 Contributors: miiira
 Tags: gravity forms, spam, management
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.4
 Stable tag: 1.0
-License: GPL-2.0-or-later
+License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-== Description ==
+A powerful tool to detect and manage spam entries in Gravity Forms submissions.
 
-GForm Spam Slayer is a simple yet effective tool designed to help you identify and manage spam entries within Gravity Forms. It provides a user-friendly interface to select forms, detect spam patterns, mark entries as spam, and delete them.
+== Description ==
+GForm Spam Slayer helps you identify and manage spam entries within Gravity Forms efficiently.
 
 == Installation ==
 
@@ -29,6 +30,4 @@ A: This plugin helps manage spam entries in Gravity Forms by detecting, marking,
 * Initial release.
 
 == License ==
-
-GPL-2.0-or-later  
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+This plugin is licensed under the GPL v2 or later.

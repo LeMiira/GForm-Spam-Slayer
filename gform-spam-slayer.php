@@ -521,6 +521,7 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
         foreach ( $entry_id_chunk as $entry_id ) {
             try {
                 if(!is_numeric($entry_id)) {
+                    /* translators: %s: Entry ID that was invalid */
                     throw new Exception(sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
                 }
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
@@ -574,6 +575,7 @@ function gforspsl_process_spam_deletion( $form_id ) {
         foreach ( $entry_id_chunk as $entry_id ) {
             try {
                 if(!is_numeric($entry_id)) {
+                    /* translators: %s: Entry ID that was invalid */
                     throw new Exception(sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
                 }
                 GFAPI::delete_entry( $entry_id );
