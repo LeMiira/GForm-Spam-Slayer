@@ -437,6 +437,13 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
             if ($field && $field->type === 'name') {
                 $first_name_id = $field_id . '.3';  // First Name sub-field ID
                 $last_name_id = $field_id . '.6';   // Last Name sub-field ID
+                
+                // Also check the full name field itself
+                $full_name = isset($entry[$field_id]) ? $entry[$field_id] : '';
+                if (preg_match($regex_pattern, $full_name)) {
+                    $is_spam = true;
+                    $entry_output .= '<p class="gform-spam-slayer-spam-match">Full Name (' . esc_html($field_id) . ') SPAM MATCH: ' . esc_html($full_name) . '</p>';
+                }
 
                 $first_name = isset($entry[ $first_name_id ]) ? $entry[ $first_name_id ] : '';
                 $last_name = isset($entry[ $last_name_id ]) ? $entry[ $last_name_id ] : '';
