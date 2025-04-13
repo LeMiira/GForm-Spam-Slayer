@@ -93,7 +93,7 @@ function gform_spam_slayer_render_admin_page() {
     // Predefined Regex Patterns
     $regex_patterns = array(
         'gibberish_mix' => array(
-            'pattern' => '/^[a-z][0-9][a-z0-9]{8,}$/i',
+            'pattern' => '/^[a-z0-9\s]{10,}$/i',
             'description' => __('Letter-Number-Mix pattern (like asad5gbgfbdsz)', 'gform-spam-slayer'),
             'example' => 'asad5gbgfbdsz',
             'hit_test' => true
@@ -349,10 +349,10 @@ function gform_spam_slayer_process_form() {
             $result = gforspsl_process_spam_finding($form_id, $fields_to_check, $limit, $effective_pattern);
             break;
         case 'mark_spam':
-            $result = process_spam_marking($form_id, $fields_to_check, $effective_pattern);
+            $result = gforspsl_process_spam_marking($form_id, $fields_to_check, $effective_pattern);
             break;
         case 'delete_spam':
-            $result = process_spam_deletion($form_id);
+            $result = gforspsl_process_spam_deletion($form_id);
             break;
         default:
             wp_send_json_error(__('Invalid action.', 'gform-spam-slayer'));
