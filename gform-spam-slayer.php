@@ -1,14 +1,16 @@
 <?php
-/**
- * Plugin Name: GForm Spam Slayer
- * Plugin URI: https://github.com/LeMiira/gform-spam-slayer
- * Description: A WordPress plugin to detect and manage spam entries in Gravity Forms.
- * Version: 1.0
- * Author: Mira
- * Author URI: https://github.com/LeMiira
- * License: GPL-2.0-or-later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- */
+/*
+Plugin Name: GForm Spam Slayer
+Plugin URI: https://github.com/LeMiira/gform-spam-slayer
+Description: A WordPress plugin to detect and manage spam entries in Gravity Forms
+Version: 1.0
+Author: Mira
+Author URI: https://github.com/LeMiira
+Text Domain: gform-spam-slayer
+Domain Path: /languages
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+*/
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
