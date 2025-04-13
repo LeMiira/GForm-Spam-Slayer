@@ -463,17 +463,17 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
                 // Check First Name
                 if (preg_match($regex_pattern, $first_name)) {
                     $is_spam = true;
-                    $entry_output .= '<p class="gform-spam-slayer-spam-match">First Name (' . esc_html($first_name_id) . ') SPAM MATCH: ' . esc_html($first_name) . '</p>';
+                    $entry_output .= '<p class="gform-spam-slayer-spam-match">First Name (' . esc_html($first_name_input['id']) . ') SPAM MATCH: ' . esc_html($first_name) . '</p>';
                 } else {
-                    $entry_output .= '<p>First Name (' . esc_html($first_name_id) . ') OK: ' . esc_html($first_name) . '</p>';
+                    $entry_output .= '<p>First Name (' . esc_html($first_name_input['id']) . ') OK: ' . esc_html($first_name) . '</p>';
                 }
 
                 // Check Last Name
                 if (preg_match($regex_pattern, $last_name)) {
                     $is_spam = true;
-                    $entry_output .= '<p class="gform-spam-slayer-spam-match">Last Name (' . esc_html($last_name_id) . ') SPAM MATCH: ' . esc_html($last_name) . '</p>';
+                    $entry_output .= '<p class="gform-spam-slayer-spam-match">Last Name (' . esc_html($last_name_input['id']) . ') SPAM MATCH: ' . esc_html($last_name) . '</p>';
                 } else {
-                    $entry_output .= '<p>Last Name (' . esc_html($last_name_id) . ') OK: ' . esc_html($last_name) . '</p>';
+                    $entry_output .= '<p>Last Name (' . esc_html($last_name_input['id']) . ') OK: ' . esc_html($last_name) . '</p>';
                 }
             } else {
                 // Handle other field types
