@@ -435,18 +435,30 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
 
             // Check if it's a Name field (has sub-fields)
             if ($field && $field->type === 'name') {
-                $first_name_id = $field_id . '.3';  // First Name sub-field ID
-                $last_name_id = $field_id . '.6';   // Last Name sub-field ID
+                // Get the inputs array which contains all subfields
+                $inputs = $field->get_entry_inputs();
+                $first_name_input = null;
+                $last_name_input = null;
                 
-                // Also check the full name field itself
+                // Find first and last name inputs
+                foreach ($inputs as $input) {
+                    if (strpos(strtolower($input['label']), 'first') !== false) {
+                        $first_name_input = $input;
+                    } else if (strpos(strtolower($input['label']), 'last') !== false) {
+                        $last_name_input = $input;
+                    }
+                }
+
+                // Check full name field
                 $full_name = isset($entry[$field_id]) ? $entry[$field_id] : '';
                 if (preg_match($regex_pattern, $full_name)) {
                     $is_spam = true;
                     $entry_output .= '<p class="gform-spam-slayer-spam-match">Full Name (' . esc_html($field_id) . ') SPAM MATCH: ' . esc_html($full_name) . '</p>';
                 }
 
-                $first_name = isset($entry[ $first_name_id ]) ? $entry[ $first_name_id ] : '';
-                $last_name = isset($entry[ $last_name_id ]) ? $entry[ $last_name_id ] : '';
+                // Get values using dynamic input IDs
+                $first_name = ($first_name_input && isset($entry[$first_name_input['id']])) ? $entry[$first_name_input['id']] : '';
+                $last_name = ($last_name_input && isset($entry[$last_name_input['id']])) ? $entry[$last_name_input['id']] : '';
 
                 // Check First Name
                 if (preg_match($regex_pattern, $first_name)) {
