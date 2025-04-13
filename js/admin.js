@@ -17,6 +17,7 @@
                     if (response.success) {
                         fieldList.html(response.data).addClass('active');
                     } else {
+                        fieldList.html('<div class="error-message">' + response.data + '</div>').addClass('active');
                         console.error('Error:', response.data);
                     }
                 },

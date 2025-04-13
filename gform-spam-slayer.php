@@ -262,6 +262,11 @@ function gform_spam_slayer_load_fields() {
         wp_send_json_error(__('Form not found', 'gform-spam-slayer'));
     }
 
+    if (empty($form['fields'])) {
+        wp_send_json_error(__('No fields found in this form.', 'gform-spam-slayer'));
+        return;
+    }
+
     $fields = $form['fields'];
     $output = '<h4>' . esc_html__('Available Fields:', 'gform-spam-slayer') . '</h4><ul>';
 

@@ -42,8 +42,14 @@
     color: red;
 }
 
-.gform-spam-slayer-error {
+.gform-spam-slayer-error, .error-message {
     color: red;
+    font-weight: bold;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fff2f2;
+    border: 1px solid #ffcaca;
+    border-radius: 4px;
 }
 
 .gform-spam-slayer-warning {
