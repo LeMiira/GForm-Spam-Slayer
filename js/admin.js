@@ -85,7 +85,7 @@
                 error: function(xhr, status, error) {
                     loadingIndicator.hide();
                     console.error('AJAX Error:', status, error);
-                    alert('AJAX Error: ' + error);
+                    debugResults.html('<div class="error-message">No entries found. Please add some entries to the form first.</div>').show();
                 }
             });
 
