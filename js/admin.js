@@ -85,7 +85,8 @@
                 error: function(xhr, status, error) {
                     loadingIndicator.hide();
                     console.error('AJAX Error:', status, error);
-                    debugResults.html('<div class="error-message">No entries found. Please add some entries to the form first.</div>').show();
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.data : 'Server error occurred. Please check if Gravity Forms is active and you have permissions.';
+                    debugResults.html('<div class="error-message">' + errorMessage + '</div>').show();
                 }
             });
 
