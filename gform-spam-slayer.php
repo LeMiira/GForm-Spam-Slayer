@@ -18,7 +18,27 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// Check if Gravity Forms is active
+function gform_spam_slayer_check_dependency() {
+    if (!class_exists('GFAPI')) {
+        add_action('admin_notices', 'gform_spam_slayer_missing_gf_notice');
+        deactivate_plugins(plugin_basename(__FILE__));
+        if (isset($_GET['activate'])) {
+            unset($_GET['activate']);
+        }
+    }
+}
+add_action('admin_init', 'gform_spam_slayer_check_dependency');
+
+// Display notice if Gravity Forms is not installed
+function gform_spam_slayer_missing_gf_notice() {
+    echo '<div class="error"><p>';
+    echo esc_html__('GForm Spam Slayer requires Gravity Forms to be installed and activated. Please install Gravity Forms to use this plugin.', 'gform-spam-slayer');
+    echo '</p></div>';
+}
+
 // Plugin text domain is automatically loaded by WordPress.org
+
 
 // Add the plugin menu to the WordPress admin tools section
 add_action('admin_menu', 'gform_spam_slayer_add_admin_menu');
