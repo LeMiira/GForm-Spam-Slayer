@@ -1,4 +1,5 @@
 === GForm Spam Slayer ===
+A powerful tool to detect and manage spam entries in Gravity Forms submissions.
 Contributors: miiira
 Tags: gravity forms, spam, management
 Requires at least: 5.0

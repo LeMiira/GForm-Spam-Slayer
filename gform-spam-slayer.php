@@ -38,7 +38,7 @@ function gform_spam_slayer_enqueue_admin_scripts($hook) {
 
     // Register and enqueue admin scripts and styles only on plugin page
     $version = '1.0';
-    
+
     wp_register_script(
         'gforspsl-admin', 
         plugin_dir_url(__FILE__) . 'js/admin.js',
@@ -46,7 +46,7 @@ function gform_spam_slayer_enqueue_admin_scripts($hook) {
         $version,
         true
     );
-    
+
     wp_register_style(
         'gforspsl-styles',
         plugin_dir_url(__FILE__) . 'css/style.css',
@@ -296,10 +296,10 @@ function gform_spam_slayer_process_form() {
     }
 
     $form_id = isset($_POST['form_id']) ? intval($_POST['form_id']) : 0;
-    $field_ids = isset($_POST['field_ids']) ? sanitize_text_field($_POST['field_ids']) : '';
-    $regex_pattern = isset($_POST['regex_pattern']) ? sanitize_text_field($_POST['regex_pattern']) : '';
-    $custom_pattern = isset($_POST['custom_pattern']) ? sanitize_text_field($_POST['custom_pattern']) : '';
-    $sub_action = isset($_POST['sub_action']) ? sanitize_text_field($_POST['sub_action']) : '';
+    $field_ids = isset($_POST['field_ids']) ? sanitize_text_field(wp_unslash($_POST['field_ids'])) : '';
+    $regex_pattern = isset($_POST['regex_pattern']) ? sanitize_text_field(wp_unslash($_POST['regex_pattern'])) : '';
+    $custom_pattern = isset($_POST['custom_pattern']) ? sanitize_text_field(wp_unslash($_POST['custom_pattern'])) : '';
+    $sub_action = isset($_POST['sub_action']) ? sanitize_text_field(wp_unslash($_POST['sub_action'])) : '';
 
     $fields_to_check = array_map('trim', explode(',', $field_ids));
     $effective_pattern = !empty($custom_pattern) ? $custom_pattern : $regex_pattern;
@@ -469,9 +469,9 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
 function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
     global $wpdb;
 
-    // Only set time limit for this specific operation if allowed
-    if (strpos(ini_get('disable_functions'), 'set_time_limit') === false) {
-        set_time_limit(30); // 30 seconds
+    // Process entries with timeout handling through WordPress functions
+    if (!wp_doing_ajax()) {
+        wp_raise_memory_limit('admin');
     }
 
     $marked_count = 0;
@@ -499,7 +499,7 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
             }else{
-                error_log("Invalid entry ID: ".$entry_id);
+                $error = new WP_Error('invalid_entry', sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
             }
             /*} catch (Exception $e) {
                 error_log("Error marking entry ".$entry_id." as spam: ".$e->getMessage());
@@ -525,9 +525,9 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
 function gforspsl_process_spam_deletion( $form_id ) {
     global $wpdb;
 
-    // Only set time limit for this specific operation if allowed
-    if (strpos(ini_get('disable_functions'), 'set_time_limit') === false) {
-        set_time_limit(30); // 30 seconds
+    // Process entries with timeout handling through WordPress functions
+    if (!wp_doing_ajax()) {
+        wp_raise_memory_limit('admin');
     }
 
     $deleted_count = 0;
@@ -555,7 +555,7 @@ function gforspsl_process_spam_deletion( $form_id ) {
                 GFAPI::delete_entry( $entry_id );
                 $deleted_count++;
             }else{
-                error_log("Invalid entry ID: ".$entry_id);
+                $error = new WP_Error('invalid_entry', sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
             }
         /*} catch (Exception $e) {
                 error_log("Error deleting entry ".$entry_id.": ".$e->getMessage());
