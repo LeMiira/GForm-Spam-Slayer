@@ -7,7 +7,7 @@ Version: 1.0
 Requires at least: 5.0
 Requires PHP: 7.2
 Author: Mira
-Author URI: https://github.com/LeMiira
+Author URI: https://profiles.wordpress.org/miiira
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: gform-spam-slayer
@@ -18,27 +18,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Check if Gravity Forms is active
-function gform_spam_slayer_check_dependency() {
-    if (!class_exists('GFAPI')) {
-        add_action('admin_notices', 'gform_spam_slayer_missing_gf_notice');
-        deactivate_plugins(plugin_basename(__FILE__));
-        if (isset($_GET['activate'])) {
-            unset($_GET['activate']);
-        }
-    }
-}
-add_action('admin_init', 'gform_spam_slayer_check_dependency');
-
-// Display notice if Gravity Forms is not installed
-function gform_spam_slayer_missing_gf_notice() {
-    echo '<div class="error"><p>';
-    echo esc_html__('GForm Spam Slayer requires Gravity Forms to be installed and activated. Please install Gravity Forms to use this plugin.', 'gform-spam-slayer');
-    echo '</p></div>';
-}
-
 // Plugin text domain is automatically loaded by WordPress.org
-
 
 // Add the plugin menu to the WordPress admin tools section
 add_action('admin_menu', 'gform_spam_slayer_add_admin_menu');
@@ -459,7 +439,7 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
                 $inputs = $field->get_entry_inputs();
                 $first_name_input = null;
                 $last_name_input = null;
-                
+
                 // Find first and last name inputs
                 foreach ($inputs as $input) {
                     if (strpos(strtolower($input['label']), 'first') !== false) {
@@ -572,15 +552,15 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
             } catch (Exception $e) {
-                
+
                   if (WP_DEBUG_LOG) {
                     // translators: %1$s is the entry ID, %2$s is the error message
                     $error_message = sprintf('[GForm Spam Slayer] Error marking entry %1$s: %2$s', $entry_id, $e->getMessage());
                     wp_error_log($error_message);
                 }
                 continue;
-                
-              
+
+
             }
         } // inner foreach (entries in chunk)
 
@@ -639,7 +619,7 @@ function gforspsl_process_spam_deletion( $form_id ) {
                     wp_error_log($error_message);
                 }
                 continue;
-               
+
             }
         } // inner foreach (entries in chunk)
     } // outer foreach (chunks)
