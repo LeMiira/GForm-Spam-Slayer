@@ -1,80 +1,256 @@
+```txt id="gform-readme-updated"
 === GForm Spam Slayer ===
+
 Contributors: miiira  
-Tags: gravity forms, spam, spam detection, spam cleanup
-Requires at least: 5.0  
-Tested up to: 6.8  
-Stable tag: 1.0  
+Tags: gravity forms, spam cleanup, regex scanner, bot cleanup, entry management  
+Requires at least: 6.0  
+Tested up to: 6.9  
+Requires PHP: 7.4  
+Stable tag: 1.0.0  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 
-A powerful tool to detect and manage spam-like entries already submitted via Gravity Forms.
+Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries.
 
 == Description ==
 
-**GForm Spam Slayer** is a post-submission spam detection and cleanup tool for Gravity Forms. It helps administrators locate suspicious or spam-like entries that have already been submitted by analyzing specific form fields using regular expression (regex) matching.
+**GForm Spam Slayer** is a lightweight and focused cleanup utility for Gravity Forms that helps you detect, review, mark, and remove spam-like submissions that already exist in your database.
 
-Rather than preventing spam from being submitted, this plugin scans your stored form entries to identify those that match patterns commonly used in spam — such as long alphanumeric strings or unnatural text. It’s a great tool for maintaining clean, reliable form data and reducing the noise caused by bot submissions.
+Instead of trying to block spam during form submission, the plugin works as a post-submission analysis tool. It scans stored entries using regex-powered pattern matching to identify suspicious submissions such as:
+- long alphanumeric strings
+- bot-generated fake names
+- promo spam
+- random text injections
+- malformed email patterns
+- repetitive automated content
 
-**Key Features:**
+Perfect for sites that:
+- experienced bot attacks
+- migrated old forms
+- accumulated spam over time
+- need safer manual cleanup tools
+- want more control than basic spam filtering
 
-- Select any Gravity Form and choose specific fields to scan.
-- Use built-in or custom regex patterns to detect spammy content.
-- Perform full scans or test scans on just a few entries.
-- Bulk mark or delete spam entries.
-- Clean, intuitive interface under **Tools > GForm Spam Slayer**.
+---
 
-**Example Use Cases:**
+== Features ==
 
-- Detect entries with long alphanumeric values (e.g., fake names or promo messages).
-- Clean up form submissions after a bot attack.
-- Apply fine-tuned regex filtering to specific form fields (like names, emails, or comments).
+✔ Scan existing Gravity Forms entries using regex patterns  
+✔ Select specific forms and fields to analyze  
+✔ Built-in spam detection presets  
+✔ Custom regex support for advanced filtering  
+✔ Preview suspicious entries before deletion  
+✔ Test mode for safer regex validation  
+✔ Bulk mark spam entries  
+✔ Bulk delete spam entries  
+✔ Lightweight and fast admin interface  
+✔ Native WordPress admin UI  
+✔ No tracking, telemetry, or external API calls  
+✔ Minimal performance impact  
+✔ Works with existing Gravity Forms data  
 
-**Note:** This plugin does **not prevent** spam at the time of submission. It is designed to **detect and help clean up** spam entries already present in your Gravity Forms entries.
+---
+
+== Example Use Cases ==
+
+### Clean Up Bot Attacks
+Detect and remove thousands of spam submissions after an attack.
+
+### Detect Fake Names
+Find entries containing suspicious random character strings.
+
+### Filter Promo Spam
+Locate entries containing repetitive promotional phrases or URLs.
+
+### Advanced Regex Filtering
+Use custom regex patterns to create highly targeted spam cleanup workflows.
+
+---
+
+== Important Note ==
+
+This plugin does **NOT** block spam during form submission.
+
+It is designed specifically for:
+- spam detection
+- spam analysis
+- spam cleanup
+- post-submission moderation
+
+For prevention, combine it with:
+- reCAPTCHA
+- Cloudflare Turnstile
+- Gravity Forms anti-spam tools
+- honeypot fields
+
+---
 
 == Installation ==
 
-1. Upload the `gform-spam-slayer` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the **Plugins** menu in WordPress.
-3. Navigate to **Tools > GForm Spam Slayer** to use the plugin.
-4. Select a form, choose which fields to analyze, and either select a regex pattern or define your own.
-5. Run a scan, mark spam entries, or delete them as needed.
+1. Upload the `gform-spam-slayer` folder to `/wp-content/plugins/`
+2. Activate the plugin from the WordPress Plugins screen
+3. Navigate to:
+   `Tools → GForm Spam Slayer`
+4. Select:
+   - a Gravity Form
+   - fields to analyze
+   - a regex pattern or custom filter
+5. Run:
+   - test scan
+   - full scan
+   - spam marking
+   - spam deletion
+
+---
 
 == Frequently Asked Questions ==
 
-= Q: Does this plugin block spam submissions? =  
-**A:** No. GForm Spam Slayer is designed to **detect spam after submission**, not prevent it at the entry point. It scans existing entries based on field values and regex patterns.
+= Does this plugin block spam submissions? =
 
-= Q: How does the regex detection work? =  
-**A:** You can choose a preset regex pattern (e.g., long alphanumeric strings) or enter your own custom pattern. The plugin then checks your selected form field(s) for matches.
+No.  
+GForm Spam Slayer is intentionally focused on detecting and cleaning spam entries that already exist.
 
-= Q: Can I test the regex before applying it? =  
-**A:** Yes. The UI includes a sample text field and a "Test 10" option to scan a small batch of recent entries before committing to a full scan or deletion.
+---
 
-= Q: Will it affect legitimate entries? =  
-**A:** It’s important to choose or test regex patterns carefully. The plugin provides a preview/test scan feature to minimize false positives.
+= How does the spam detection work? =
 
-= Q: Where is the plugin located in WordPress? =  
-**A:** After activation, go to **Tools > GForm Spam Slayer** in the WordPress dashboard.
+The plugin scans selected form fields using regex pattern matching.
+
+You can:
+- use built-in presets
+- create custom regex patterns
+- test patterns before applying them
+
+---
+
+= Can I preview entries before deleting them? =
+
+Yes.  
+The plugin includes preview and test scan tools to reduce false positives and improve cleanup safety.
+
+---
+
+= Can I test regex patterns safely? =
+
+Yes.  
+You can:
+- test against sample text
+- run limited scans (e.g. latest 10 entries)
+- validate patterns before bulk actions
+
+---
+
+= Does the plugin send data externally? =
+
+No.  
+Everything runs locally inside your WordPress installation.
+
+No external APIs, tracking systems, analytics, or telemetry are used.
+
+---
+
+= Where can I access the plugin? =
+
+After activation:
+
+`Tools → GForm Spam Slayer`
+
+---
+
+== Security & Privacy ==
+
+GForm Spam Slayer:
+- does not collect user data
+- does not transmit entries externally
+- does not use remote APIs
+- operates entirely within WordPress admin
+
+Recommended best practices:
+- always test regex patterns first
+- backup your database before large cleanup operations
+- review suspicious entries before deletion
+
+---
+
+== Performance ==
+
+The plugin is designed to remain lightweight:
+- no frontend scripts
+- no tracking
+- no background API calls
+- optimized admin-only operations
+- minimal database overhead
+
+---
 
 == Screenshots ==
 
-1. Admin interface under Tools > GForm Spam Slayer.
-2. Field selector and regex input area.
-3. Action buttons for scanning, marking, and deleting entries.
+1. Main admin interface under Tools → GForm Spam Slayer  
+2. Gravity Forms field selector and regex configuration  
+3. Preview mode and suspicious entry detection  
+4. Bulk spam marking and deletion tools  
+5. Test scan interface for safe regex validation  
+
+---
 
 == Changelog ==
 
-= 1.0 =  
-* Initial release.  
-* Includes full scan, test scan, spam marking, and deletion based on field-level regex patterns.
+= 1.0.0 =
+* Initial public release
+* Regex-powered spam detection
+* Full scan and test scan modes
+* Spam marking support
+* Bulk deletion tools
+* Gravity Forms field targeting
+* Lightweight admin interface
+
+---
 
 == Upgrade Notice ==
 
-= 1.0 =  
-Initial release – use this tool to clean up existing Gravity Forms spam entries using custom regex filters.
+= 1.0.0 =
+
+Initial release of GForm Spam Slayer.
+
+Use regex-powered analysis tools to clean and manage existing Gravity Forms spam entries safely.
+
+---
 
 == License ==
 
-This plugin is licensed under the GPL v2 or later.  
-You are free to use, modify, and distribute it under the same license.
+This plugin is licensed under the GPL v2 or later.
 
+You are free to:
+- use
+- modify
+- distribute
+- fork
+
+under the terms of the GPL license.
+```
+```txt id="donate-section"
+== Support ==
+
+If GForm Spam Slayer helps you clean up your forms and fight spam chaos, you can support development here:
+
+GitHub Sponsors:
+https://github.com/sponsors/LeMiira
+
+Buy Me a Coffee:
+https://buymeacoffee.com/miiiira
+
+Website:
+https://miiiira.com
+
+GitHub:
+https://github.com/LeMiira
+
+Your support helps maintain:
+- plugin updates
+- compatibility improvements
+- security fixes
+- new features
+- future WordPress tools and experiments
+
+Thank you for supporting independent development.
+```
