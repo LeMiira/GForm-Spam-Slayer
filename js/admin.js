@@ -32,6 +32,45 @@
             loadFields($(this).val());
         });
 
+        // Function to update example text based on selected pattern or custom input
+        function updateExample() {
+            var selectedPattern = $('#regex_pattern').val();
+            var customPattern = $('#custom_pattern').val();
+            var exampleDiv = $('#pattern-example');
+
+            if (selectedPattern) {
+                var exampleText = '';
+                var patterns = gform_spam_slayer_params.regex_patterns;
+
+                for (var key in patterns) {
+                    if (patterns.hasOwnProperty(key)) {
+                        if (patterns[key].pattern === selectedPattern) {
+                            exampleText = patterns[key].example;
+                            break;
+                        }
+                    }
+                }
+
+                exampleDiv.html('<b>' + gform_spam_slayer_params.i18n.example_text + '</b><br> ' + exampleText);
+            } else if (customPattern) {
+                exampleDiv.html('<b>' + gform_spam_slayer_params.i18n.this_regex + '</b> ' + customPattern);
+            } else {
+                exampleDiv.html(gform_spam_slayer_params.i18n.select_pattern);
+            }
+        }
+
+        // Call updateExample on page load, select change, or custom input keyup
+        $('#regex_pattern').on('change', function() {
+            updateExample();
+        });
+
+        $('#custom_pattern').on('input keyup change', function() {
+            updateExample();
+        });
+
+        // Initialize example text
+        updateExample();
+
         // Process form submission via AJAX
         $('.main-button').on('click', function(e) {
             e.preventDefault();

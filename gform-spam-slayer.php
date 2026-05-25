@@ -3,9 +3,9 @@
 Plugin Name: GForm Spam Slayer
 Plugin URI: https://github.com/LeMiira/gform-spam-slayer
 Description: A WordPress plugin to detect and manage spam entries in Gravity Forms
-Version: 1.0
+Version: 1.1
 Requires at least: 5.0
-Requires PHP: 7.2
+Requires PHP: 7.4
 Author: Mira
 Author URI: https://profiles.wordpress.org/miiira
 License: GPL v2 or later
@@ -33,65 +33,13 @@ function gform_spam_slayer_add_admin_menu() {
     );
 }
 
-// Enqueue admin scripts
-add_action('admin_enqueue_scripts', 'gform_spam_slayer_enqueue_admin_scripts');
-function gform_spam_slayer_enqueue_admin_scripts($hook) {
-    if ('tools_page_gform-spam-slayer' !== $hook) {
-        return;
-    }
-
-    // Register and enqueue admin scripts and styles only on plugin page
-    $version = '1.0';
-
-    wp_register_script(
-        'gforspsl-admin', 
-        plugin_dir_url(__FILE__) . 'js/admin.js',
-        array('jquery'),
-        $version,
-        true
-    );
-
-    wp_register_style(
-        'gforspsl-styles',
-        plugin_dir_url(__FILE__) . 'css/style.css',
-        array(),
-        $version
-    );
-
-    wp_enqueue_script('gforspsl-admin');
-    wp_enqueue_style('gforspsl-styles');
-
-    wp_localize_script('gforspsl-admin', 'gform_spam_slayer_params', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('gforspsl-nonce')
-    ));
-}
-
-// Render the admin page for the plugin
-function gform_spam_slayer_render_admin_page() {
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-
-    echo '<div class="wrap">';
-    echo '<h1>' . esc_html__('GForm Spam Slayer - Spam Management', 'gform-spam-slayer') . '</h1>';
-    echo '<p>' . esc_html__('Use this tool to detect and manage spam entries in Gravity Forms.', 'gform-spam-slayer') . '</p>';
-
-    $forms = GFAPI::get_forms();
-    if (empty($forms)) {
-        echo '<p>' . esc_html__('No forms available. Please create a form first.', 'gform-spam-slayer') . '</p>';
-        return;
-    }
-
-    // Retrieve stored settings
-    $stored_form_id = get_option('gform_spam_slayer_form_id', '');
-    $stored_field_ids = get_option('gform_spam_slayer_field_ids', '');
-    $stored_regex_pattern = get_option('gform_spam_slayer_regex_pattern', '');
-    $stored_custom_pattern = get_option('gform_spam_slayer_custom_pattern', '');
-    $stored_action = get_option('gform_spam_slayer_action', '');
-
-    // Predefined Regex Patterns
-    $regex_patterns = array(
+/**
+ * Get predefined regex patterns for spam detection.
+ *
+ * @return array Predefined regex patterns.
+ */
+function gform_spam_slayer_get_regex_patterns() {
+    return array(
         'gibberish_mix' => array(
             'pattern' => '/^[a-z0-9\s]{10,}$/i',
             'description' => __('Letter-Number-Mix pattern (like asad5gbgfbdsz)', 'gform-spam-slayer'),
@@ -140,8 +88,74 @@ function gform_spam_slayer_render_admin_page() {
             'example' => 'test@example.com',
             'hit_test' => false
         ),
-        // Add more patterns as needed
     );
+}
+
+// Enqueue admin scripts
+add_action('admin_enqueue_scripts', 'gform_spam_slayer_enqueue_admin_scripts');
+function gform_spam_slayer_enqueue_admin_scripts($hook) {
+    if ('tools_page_gform-spam-slayer' !== $hook) {
+        return;
+    }
+
+    // Register and enqueue admin scripts and styles only on plugin page
+    $version = '1.1';
+
+    wp_register_script(
+        'gforspsl-admin', 
+        plugin_dir_url(__FILE__) . 'js/admin.js',
+        array('jquery'),
+        $version,
+        true
+    );
+
+    wp_register_style(
+        'gforspsl-styles',
+        plugin_dir_url(__FILE__) . 'css/style.css',
+        array(),
+        $version
+    );
+
+    wp_enqueue_script('gforspsl-admin');
+    wp_enqueue_style('gforspsl-styles');
+
+    wp_localize_script('gforspsl-admin', 'gform_spam_slayer_params', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('gforspsl-nonce'),
+        'regex_patterns' => gform_spam_slayer_get_regex_patterns(),
+        'i18n' => array(
+            'example_text' => __('Example text using this pattern:', 'gform-spam-slayer'),
+            'this_regex' => __('This Regex:', 'gform-spam-slayer'),
+            'select_pattern' => __('Please select or enter a pattern to view an example.', 'gform-spam-slayer'),
+        )
+    ));
+}
+
+// Render the admin page for the plugin
+function gform_spam_slayer_render_admin_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    echo '<div class="wrap">';
+    echo '<h1>' . esc_html__('GForm Spam Slayer - Spam Management', 'gform-spam-slayer') . '</h1>';
+    echo '<p>' . esc_html__('Use this tool to detect and manage spam entries in Gravity Forms.', 'gform-spam-slayer') . '</p>';
+
+    $forms = GFAPI::get_forms();
+    if (empty($forms)) {
+        echo '<p>' . esc_html__('No forms available. Please create a form first.', 'gform-spam-slayer') . '</p>';
+        return;
+    }
+
+    // Retrieve stored settings
+    $stored_form_id = get_option('gform_spam_slayer_form_id', '');
+    $stored_field_ids = get_option('gform_spam_slayer_field_ids', '');
+    $stored_regex_pattern = get_option('gform_spam_slayer_regex_pattern', '');
+    $stored_custom_pattern = get_option('gform_spam_slayer_custom_pattern', '');
+    $stored_action = get_option('gform_spam_slayer_action', '');
+
+    // Predefined Regex Patterns
+    $regex_patterns = gform_spam_slayer_get_regex_patterns();
 
     ?>
 
@@ -163,7 +177,7 @@ function gform_spam_slayer_render_admin_page() {
 
         <hr>
         <label for="regex_pattern"><?php esc_html_e('Regex Pattern:', 'gform-spam-slayer'); ?></label>
-        <select name="regex_pattern" id="regex_pattern" onchange="updateExample()">
+        <select name="regex_pattern" id="regex_pattern">
             <option value=""><?php esc_html_e('Custom Pattern', 'gform-spam-slayer'); ?></option>
             <?php foreach ($regex_patterns as $key => $pattern): ?>
                 <option value="<?php echo esc_attr($pattern['pattern']); ?>" <?php selected($stored_regex_pattern, $pattern['pattern']); ?>>
@@ -189,7 +203,7 @@ function gform_spam_slayer_render_admin_page() {
                 if (isset($matched) && !empty($matched)) {
                     echo '<p>' . esc_html($matched) . '</p>';
                 } else {
-                    echo '<p>Enter custom regex and test to see matches here</p>';
+                    echo '<p>' . esc_html__('Enter custom regex and test to see matches here', 'gform-spam-slayer') . '</p>';
                 }
             } else {
                 echo '<p>' . esc_html__('Select a pattern or enter a custom one', 'gform-spam-slayer') . '</p>';
@@ -219,30 +233,7 @@ function gform_spam_slayer_render_admin_page() {
 
     </form>
         <div id="debug-results" style="display:none;"></div>
-    <div id="loading-indicator" style="display:none;">Loading...</div>
-    <script>
-        function updateExample() {
-            var selectedPattern = document.getElementById("regex_pattern").value;
-            var customPattern = document.getElementById("custom_pattern").value;
-
-            if (selectedPattern) {
-                var exampleText = '';
-
-                // Check if selected pattern is one of the predefined patterns
-                <?php foreach ($regex_patterns as $key => $pattern): ?>
-                    if (selectedPattern == "<?php echo esc_attr($pattern['pattern']); ?>") {
-                        exampleText = "<?php echo esc_js($pattern['example']); ?>";
-                    }
-                <?php endforeach; ?>
-
-                document.getElementById("pattern-example").innerHTML = "<b>Example text using this pattern:</b><br> " + exampleText;
-            } else if (customPattern) {
-                document.getElementById("pattern-example").innerHTML = "<b>This Regex:</b> " + customPattern;
-            } else {
-                document.getElementById("pattern-example").innerHTML = "Please select or enter a pattern to view an example.";
-            }
-        }
-    </script>
+    <div id="loading-indicator" style="display:none;"><?php esc_html_e('Loading...', 'gform-spam-slayer'); ?></div>
     <?php
     echo '</div>';
 }
@@ -342,6 +333,11 @@ function gform_spam_slayer_process_form() {
         return;
     }
 
+    if (@preg_match($effective_pattern, '') === false) {
+        wp_send_json_error(__('Error: The regular expression pattern is invalid.', 'gform-spam-slayer'));
+        return;
+    }
+
     switch ($sub_action) {
         case 'find_spam':
         case 'test_spam':
@@ -425,13 +421,18 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
         return '<div class="gform-spam-slayer-error"><p>' . esc_html__('Error retrieving entries. Please try again.', 'gform-spam-slayer') . '</p></div>';
     }
 
+    $form = GFAPI::get_form($form_id);
+    if (!$form) {
+        return '<div class="gform-spam-slayer-error"><p>' . esc_html__('Error: Form not found.', 'gform-spam-slayer') . '</p></div>';
+    }
+
     foreach ( $entries as $entry ) {
         $total_checked++;
         $is_spam = false;
         $entry_output = '';
 
         foreach ( $fields_to_check as $field_id ) {
-            $field = GFFormsModel::get_field(GFAPI::get_form($form_id), $field_id);
+            $field = GFFormsModel::get_field($form, $field_id);
 
             // Check if it's a Name field (has sub-fields)
             if ($field && $field->type === 'name') {
@@ -500,8 +501,8 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
         }
     }
 
-    $output .= '<p>Total entries checked: ' . esc_html( $total_checked ) . '</p>';
-    $output .= '<p class="gform-spam-slayer-spam-count">Total spam entries found: ' . esc_html( $spam_count ) . '</p>';
+    $output .= '<p>' . sprintf( esc_html__( 'Total entries checked: %d', 'gform-spam-slayer' ), $total_checked ) . '</p>';
+    $output .= '<p class="gform-spam-slayer-spam-count">' . sprintf( esc_html__( 'Total spam entries found: %d', 'gform-spam-slayer' ), $spam_count ) . '</p>';
 
     return $output;
 }
@@ -517,8 +518,6 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
  * @return string HTML output of spam marking results
  */
 function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
-    global $wpdb;
-
     // Process entries with timeout handling through WordPress functions
     if (!wp_doing_ajax()) {
         wp_raise_memory_limit('admin');
@@ -529,14 +528,14 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
 
     // Basic validation for form_id
     if ( ! is_int( $form_id ) || $form_id <= 0 ) {
-        return '<p style="color:red;">Error: Invalid Form ID.</p>';
+        return '<p style="color:red;">' . esc_html__( 'Error: Invalid Form ID.', 'gform-spam-slayer' ) . '</p>';
     }
 
     // Get all entry IDs for the specified form that are *not* already marked as spam
     $entry_ids = GFAPI::get_entry_ids( $form_id, [ 'status' => 'active', 'field_filters' => [] ] ); // Get only active entries
 
     if ( empty( $entry_ids ) ) {
-        return '<p>No entries found to mark as spam.</p>';
+        return '<p>' . esc_html__( 'No entries found to mark as spam.', 'gform-spam-slayer' ) . '</p>';
     }
 
     // Chunk the entry IDs into smaller batches
@@ -552,22 +551,17 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
             } catch (Exception $e) {
-
-                  if (WP_DEBUG_LOG) {
+                if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
                     // translators: %1$s is the entry ID, %2$s is the error message
                     $error_message = sprintf('[GForm Spam Slayer] Error marking entry %1$s: %2$s', $entry_id, $e->getMessage());
-                    wp_error_log($error_message);
+                    error_log($error_message);
                 }
                 continue;
-
-
             }
         } // inner foreach (entries in chunk)
-
     } // outer foreach (chunks)
 
-
-    return '<p>Successfully marked ' . esc_html( $marked_count ) . ' entries as spam.</p>';
+    return '<p>' . sprintf( esc_html__( 'Successfully marked %d entries as spam.', 'gform-spam-slayer' ), $marked_count ) . '</p>';
 }
 
 /**
@@ -578,8 +572,6 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
  * @return string HTML output of spam deletion results
  */
 function gforspsl_process_spam_deletion( $form_id ) {
-    global $wpdb;
-
     // Process entries with timeout handling through WordPress functions
     if (!wp_doing_ajax()) {
         wp_raise_memory_limit('admin');
@@ -590,14 +582,14 @@ function gforspsl_process_spam_deletion( $form_id ) {
 
     // Basic validation for form_id
     if ( ! is_int( $form_id ) || $form_id <= 0 ) {
-        return '<p style="color:red;">Error: Invalid Form ID.</p>';
+        return '<p style="color:red;">' . esc_html__( 'Error: Invalid Form ID.', 'gform-spam-slayer' ) . '</p>';
     }
 
     // Get all entry IDs for the specified form that are currently marked as spam
     $entry_ids = GFAPI::get_entry_ids( $form_id, [ 'status' => 'spam', 'field_filters' => [] ] ); // Get spam entries
 
     if ( empty( $entry_ids ) ) {
-        return '<p>No spam entries found to delete.</p>';
+        return '<p>' . esc_html__( 'No spam entries found to delete.', 'gform-spam-slayer' ) . '</p>';
     }
 
     // Chunk the entry IDs into smaller batches
@@ -613,16 +605,15 @@ function gforspsl_process_spam_deletion( $form_id ) {
                 GFAPI::delete_entry( $entry_id );
                 $deleted_count++;
             } catch (Exception $e) {
-                     if (WP_DEBUG_LOG) {
+                if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
                     // translators: %1$s is the entry ID, %2$s is the error message
                     $error_message = sprintf('[GForm Spam Slayer] Error deleting entry %1$s: %2$s', $entry_id, $e->getMessage());
-                    wp_error_log($error_message);
+                    error_log($error_message);
                 }
                 continue;
-
             }
         } // inner foreach (entries in chunk)
     } // outer foreach (chunks)
 
-    return '<p>Successfully deleted ' . esc_html( $deleted_count ) . ' spam entries.</p>';
+    return '<p>' . sprintf( esc_html__( 'Successfully deleted %d spam entries.', 'gform-spam-slayer' ), $deleted_count ) . '</p>';
 }

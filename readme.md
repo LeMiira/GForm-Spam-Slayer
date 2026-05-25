@@ -86,3 +86,16 @@ For prevention, combine it with:
 ```bash
 cd wp-content/plugins
 git clone https://github.com/LeMiira/GForm-Spam-Slayer.git
+```
+
+---
+
+## Changelog
+
+### 1.1 (2026-05-26)
+- **Security Fix:** Fixed critical bug where undefined `wp_error_log` function could cause fatal PHP crash when logging errors.
+- **Security Hardening:** Implemented server-side regex validation check before running `preg_match` to prevent PHP runtime warnings or crashes on invalid patterns.
+- **Security Hardening:** Removed inline Javascript script block from the admin dashboard to comply with modern security guidelines (CSP compatibility). All JS handling is now fully localized and loaded from an external file.
+- **Performance Optimization:** Optimized Gravity Forms loop performance by caching the form object retrieval outside the loop, avoiding redundant database lookups.
+- **Localization:** Localized all remaining hardcoded strings in the admin interface and JavaScript logic.
+- **Requirement Updates:** Bumped minimum required PHP version to 7.4.
