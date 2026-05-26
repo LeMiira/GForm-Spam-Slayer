@@ -1,17 +1,18 @@
-=== GForm Spam Slayer ===
-Contributors: miiira
-Donate link: https://www.buymeacoffee.com/miiiira
-Tags: gravity forms, spam, cleanup, regex, gravity
-Requires at least: 5.0
-Tested up to: 7.0
-Stable tag: 1.4
-Requires PHP: 7.4
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# GForm Spam Slayer
 
 Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries.
 
-== Description ==
+- **Contributors:** miiira
+- **Donate link:** [Buy Me A Coffee](https://www.buymeacoffee.com/miiiira)
+- **Tags:** gravity forms, spam, cleanup, regex, gravity
+- **Requires at least:** 5.0
+- **Tested up to:** 7.0
+- **Stable tag:** 1.4
+- **Requires PHP:** 7.4
+- **License:** GPLv2 or later
+- **License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
+
+## Description
 
 ![WordPress](https://img.shields.io/badge/WordPress-6.0+-111111?style=flat-square&logo=wordpress&logoColor=ffffff&labelColor=A93D21)
 ![PHP](https://img.shields.io/badge/PHP-7.4+-111111?style=flat-square&logo=php&logoColor=ffffff&labelColor=A93D21)
