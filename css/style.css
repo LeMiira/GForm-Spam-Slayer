@@ -66,3 +66,91 @@
     overflow-y: scroll;
     display: none; /* Hidden by default */
 }
+
+/* Two-column Layout */
+.gform-spam-slayer-admin-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    max-width: 1200px;
+}
+
+.gform-spam-slayer-main-content {
+    flex: 3;
+    min-width: 300px;
+}
+
+.gform-spam-slayer-sidebar {
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Support Card */
+.gform-spam-slayer-support-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.gform-spam-slayer-support-card h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.gform-spam-slayer-support-card p {
+    font-size: 0.95em;
+    color: #666;
+    line-height: 1.5;
+}
+
+.gform-spam-slayer-support-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.gform-spam-slayer-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+}
+
+.gform-spam-slayer-btn svg {
+    flex-shrink: 0;
+}
+
+.gform-spam-slayer-btn-github {
+    background-color: #ea4aaa;
+    color: #fff !important;
+    border: 1px solid #ea4aaa;
+}
+
+.gform-spam-slayer-btn-github:hover {
+    background-color: #d13091;
+    border-color: #d13091;
+}
+
+.gform-spam-slayer-btn-bmc {
+    background-color: #FF813F;
+    color: #fff !important;
+    border: 1px solid #FF813F;
+}
+
+.gform-spam-slayer-btn-bmc:hover {
+    background-color: #e56d2b;
+    border-color: #e56d2b;
+}

@@ -3,7 +3,7 @@
 Plugin Name: GForm Spam Slayer
 Plugin URI: https://github.com/LeMiira/gform-spam-slayer
 Description: A WordPress plugin to detect and manage spam entries in Gravity Forms
-Version: 1.1
+Version: 1.4
 Requires at least: 5.0
 Requires PHP: 7.4
 Author: Mira
@@ -18,20 +18,72 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// Check for Gravity Forms during activation
+register_activation_hook(__FILE__, 'gform_spam_slayer_activate');
+function gform_spam_slayer_activate() {
+    if (!class_exists('GFAPI')) {
+        deactivate_plugins(plugin_basename(__FILE__));
+        wp_die(
+            esc_html__('GForm Spam Slayer requires Gravity Forms to be installed and active.', 'gform-spam-slayer'),
+            esc_html__('Plugin Activation Error', 'gform-spam-slayer'),
+            array('back_link' => true)
+        );
+    }
+}
+
+// Show notice if Gravity Forms is not active
+add_action('admin_notices', 'gform_spam_slayer_admin_notices');
+function gform_spam_slayer_admin_notices() {
+    if (!class_exists('GFAPI')) {
+        echo '<div class="notice notice-error"><p>';
+        echo esc_html__('GForm Spam Slayer requires Gravity Forms to be installed and active.', 'gform-spam-slayer');
+        echo '</p></div>';
+    }
+}
+
 // Plugin text domain is automatically loaded by WordPress.org
 
-// Add the plugin menu to the WordPress admin tools section
+// Add the plugin menu to the WordPress admin
 add_action('admin_menu', 'gform_spam_slayer_add_admin_menu');
 function gform_spam_slayer_add_admin_menu() {
+    add_menu_page(
+        __('GForm Tools', 'gform-spam-slayer'),
+        __('GForm Tools', 'gform-spam-slayer'),
+        'manage_options',
+        'gform-tools',
+        'gform_spam_slayer_render_admin_page',
+        'dashicons-admin-tools',
+        80
+    );
+
     add_submenu_page(
-        'tools.php', // Parent menu (Tools)
-        __('GForm Spam Slayer', 'gform-spam-slayer'), // Page title
-        __('GForm Spam Slayer', 'gform-spam-slayer'), // Menu title
-        'manage_options', // Capability (admin-only access)
-        'gform-spam-slayer', // Menu slug
-        'gform_spam_slayer_render_admin_page' // Callback function
+        'gform-tools',
+        __('GForm Spam Slayer', 'gform-spam-slayer'),
+        __('GForm Spam Slayer', 'gform-spam-slayer'),
+        'manage_options',
+        'gform-tools',
+        'gform_spam_slayer_render_admin_page'
+    );
+
+    add_submenu_page(
+        'gform-tools',
+        __('GForm Gravity Forms Usage', 'gform-spam-slayer'),
+        __('GForm Gravity Forms Usage', 'gform-spam-slayer'),
+        'manage_options',
+        'gf-usage',
+        'gform_spam_slayer_render_gf_usage_page'
     );
 }
+
+// Add settings and donate links to plugin action links
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'gform_spam_slayer_plugin_action_links');
+function gform_spam_slayer_plugin_action_links($links) {
+    $settings_link = '<a href="' . admin_url('admin.php?page=gform-tools') . '">' . __('Settings', 'gform-spam-slayer') . '</a>';
+    $donate_link = '<a href="https://www.buymeacoffee.com/miiiira" target="_blank" style="color: #FF813F; font-weight: bold;">' . __('Donate', 'gform-spam-slayer') . '</a>';
+    array_unshift($links, $settings_link, $donate_link);
+    return $links;
+}
+
 
 /**
  * Get predefined regex patterns for spam detection.
@@ -94,7 +146,7 @@ function gform_spam_slayer_get_regex_patterns() {
 // Enqueue admin scripts
 add_action('admin_enqueue_scripts', 'gform_spam_slayer_enqueue_admin_scripts');
 function gform_spam_slayer_enqueue_admin_scripts($hook) {
-    if ('tools_page_gform-spam-slayer' !== $hook) {
+    if ('toplevel_page_gform-tools' !== $hook && 'gform-tools_page_gform-tools' !== $hook) {
         return;
     }
 
@@ -137,6 +189,14 @@ function gform_spam_slayer_render_admin_page() {
         return;
     }
 
+    if (!class_exists('GFAPI')) {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('GForm Spam Slayer - Spam Management', 'gform-spam-slayer') . '</h1>';
+        echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'gform-spam-slayer') . '</p></div>';
+        echo '</div>';
+        return;
+    }
+
     echo '<div class="wrap">';
     echo '<h1>' . esc_html__('GForm Spam Slayer - Spam Management', 'gform-spam-slayer') . '</h1>';
     echo '<p>' . esc_html__('Use this tool to detect and manage spam entries in Gravity Forms.', 'gform-spam-slayer') . '</p>';
@@ -144,8 +204,12 @@ function gform_spam_slayer_render_admin_page() {
     $forms = GFAPI::get_forms();
     if (empty($forms)) {
         echo '<p>' . esc_html__('No forms available. Please create a form first.', 'gform-spam-slayer') . '</p>';
+        echo '</div>';
         return;
     }
+
+    echo '<div class="gform-spam-slayer-admin-container">';
+    echo '<div class="gform-spam-slayer-main-content">';
 
     // Retrieve stored settings
     $stored_form_id = get_option('gform_spam_slayer_form_id', '');
@@ -235,12 +299,38 @@ function gform_spam_slayer_render_admin_page() {
         <div id="debug-results" style="display:none;"></div>
     <div id="loading-indicator" style="display:none;"><?php esc_html_e('Loading...', 'gform-spam-slayer'); ?></div>
     <?php
-    echo '</div>';
+    echo '</div>'; // End .gform-spam-slayer-main-content
+
+    echo '<div class="gform-spam-slayer-sidebar">';
+    ?>
+    <div class="gform-spam-slayer-support-card">
+        <h3><?php esc_html_e('Support the Developer', 'gform-spam-slayer'); ?></h3>
+        <p><?php esc_html_e('If GForm Spam Slayer is saving you time and keeping your database clean, please consider supporting my work.', 'gform-spam-slayer'); ?></p>
+        <div class="gform-spam-slayer-support-buttons">
+            <a href="https://github.com/sponsors/lemiira" target="_blank" class="gform-spam-slayer-btn gform-spam-slayer-btn-github">
+                <svg class="icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path fill-rule="evenodd" d="M8 1.482c1.6-1.518 4.5-1.18 5.923.491 1.422 1.67 1.242 4.416-.395 6.006L8 14.102 2.472 7.98c-1.637-1.59-1.817-4.336-.395-6.006C3.5 2.296 6.4 1.958 8 1.482zm0 11.238l4.908-5.437c1.176-1.144 1.3-3.036.197-4.335-1.122-1.319-3.344-1.503-4.553-.338L8 3.256 7.448 2.61c-1.21-1.165-3.43-0.98-4.553.338-1.103 1.3-0.98 3.19.197 4.335L8 12.72z"/></svg>
+                <?php esc_html_e('GitHub Sponsor', 'gform-spam-slayer'); ?>
+            </a>
+            <a href="https://www.buymeacoffee.com/miiiira" target="_blank" class="gform-spam-slayer-btn gform-spam-slayer-btn-bmc">
+                <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3zm1 5h-3V5h3v3zM2 19h18v2H2v-2z"/></svg>
+                <?php esc_html_e('Buy Me a Coffee', 'gform-spam-slayer'); ?>
+            </a>
+        </div>
+    </div>
+    <?php
+    echo '</div>'; // End .gform-spam-slayer-sidebar
+    echo '</div>'; // End .gform-spam-slayer-admin-container
+    echo '</div>'; // End .wrap
 }
 
 // Function to load fields via AJAX
 add_action('wp_ajax_gform_spam_slayer_load_fields', 'gform_spam_slayer_load_fields');
 function gform_spam_slayer_load_fields() {
+    if (!class_exists('GFAPI')) {
+        wp_send_json_error(__('Gravity Forms is not installed or active.', 'gform-spam-slayer'));
+        return;
+    }
+
     // Check nonce and permissions
     if (!current_user_can('manage_options')) {
         wp_send_json_error(__('Insufficient permissions.', 'gform-spam-slayer'));
@@ -302,6 +392,11 @@ function gform_spam_slayer_load_fields() {
 // AJAX handler for the main form submission
 add_action('wp_ajax_gform_spam_slayer_process_form', 'gform_spam_slayer_process_form');
 function gform_spam_slayer_process_form() {
+    if (!class_exists('GFAPI')) {
+        wp_send_json_error(__('Gravity Forms is not installed or active.', 'gform-spam-slayer'));
+        return;
+    }
+
     // Verify nonce and user capabilities
     if (!current_user_can('manage_options')) {
         wp_send_json_error(__('Insufficient permissions.', 'gform-spam-slayer'));
@@ -342,13 +437,13 @@ function gform_spam_slayer_process_form() {
         case 'find_spam':
         case 'test_spam':
             $limit = ($sub_action === 'test_spam') ? 10 : 0;
-            $result = gforspsl_process_spam_finding($form_id, $fields_to_check, $limit, $effective_pattern);
+            $result = gform_spam_slayer_process_spam_finding($form_id, $fields_to_check, $limit, $effective_pattern);
             break;
         case 'mark_spam':
-            $result = gforspsl_process_spam_marking($form_id, $fields_to_check, $effective_pattern);
+            $result = gform_spam_slayer_process_spam_marking($form_id, $fields_to_check, $effective_pattern);
             break;
         case 'delete_spam':
-            $result = gforspsl_process_spam_deletion($form_id);
+            $result = gform_spam_slayer_process_spam_deletion($form_id);
             break;
         default:
             wp_send_json_error(__('Invalid action.', 'gform-spam-slayer'));
@@ -376,7 +471,7 @@ function gform_spam_slayer_process_form() {
  *
  * @return string HTML output of spam detection results
  */
-function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, $regex_pattern = '/^[a-zA-Z0-9]{15,}$/' ) {
+function gform_spam_slayer_process_spam_finding( $form_id, $fields_to_check, $limit = 0, $regex_pattern = '/^[a-zA-Z0-9]{15,}$/' ) {
 
     // Validation to ensure arguments are of expected data type
     if ( ! is_int( $form_id ) ) {
@@ -501,7 +596,9 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
         }
     }
 
+    /* translators: %d: number of checked entries */
     $output .= '<p>' . sprintf( esc_html__( 'Total entries checked: %d', 'gform-spam-slayer' ), $total_checked ) . '</p>';
+    /* translators: %d: number of spam entries found */
     $output .= '<p class="gform-spam-slayer-spam-count">' . sprintf( esc_html__( 'Total spam entries found: %d', 'gform-spam-slayer' ), $spam_count ) . '</p>';
 
     return $output;
@@ -517,7 +614,7 @@ function gforspsl_process_spam_finding( $form_id, $fields_to_check, $limit = 0, 
  *
  * @return string HTML output of spam marking results
  */
-function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
+function gform_spam_slayer_process_spam_marking( $form_id, $fields_to_check, $regex_pattern ) {
     // Process entries with timeout handling through WordPress functions
     if (!wp_doing_ajax()) {
         wp_raise_memory_limit('admin');
@@ -554,6 +651,7 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
                 if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
                     // translators: %1$s is the entry ID, %2$s is the error message
                     $error_message = sprintf('[GForm Spam Slayer] Error marking entry %1$s: %2$s', $entry_id, $e->getMessage());
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
                     error_log($error_message);
                 }
                 continue;
@@ -561,6 +659,7 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
         } // inner foreach (entries in chunk)
     } // outer foreach (chunks)
 
+    /* translators: %d: number of entries marked as spam */
     return '<p>' . sprintf( esc_html__( 'Successfully marked %d entries as spam.', 'gform-spam-slayer' ), $marked_count ) . '</p>';
 }
 
@@ -571,7 +670,7 @@ function gforspsl_process_spam_marking( $form_id, $fields_to_check, $regex_patte
  *
  * @return string HTML output of spam deletion results
  */
-function gforspsl_process_spam_deletion( $form_id ) {
+function gform_spam_slayer_process_spam_deletion( $form_id ) {
     // Process entries with timeout handling through WordPress functions
     if (!wp_doing_ajax()) {
         wp_raise_memory_limit('admin');
@@ -608,6 +707,7 @@ function gforspsl_process_spam_deletion( $form_id ) {
                 if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
                     // translators: %1$s is the entry ID, %2$s is the error message
                     $error_message = sprintf('[GForm Spam Slayer] Error deleting entry %1$s: %2$s', $entry_id, $e->getMessage());
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
                     error_log($error_message);
                 }
                 continue;
@@ -615,5 +715,90 @@ function gforspsl_process_spam_deletion( $form_id ) {
         } // inner foreach (entries in chunk)
     } // outer foreach (chunks)
 
+    /* translators: %d: number of deleted spam entries */
     return '<p>' . sprintf( esc_html__( 'Successfully deleted %d spam entries.', 'gform-spam-slayer' ), $deleted_count ) . '</p>';
+}
+
+function gform_spam_slayer_render_gf_usage_page() {
+    if (!current_user_can('manage_options')) return;
+
+    if (!class_exists('GFAPI')) {
+        echo '<div class="wrap">';
+        echo '<h1>' . esc_html__('GForm Gravity Forms Usage', 'gform-spam-slayer') . '</h1>';
+        echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'gform-spam-slayer') . '</p></div>';
+        echo '</div>';
+        return;
+    }
+
+    $results = [];
+
+    $posts = get_posts([
+        'post_type'   => 'any',
+        'post_status' => 'publish',
+        'numberposts' => -1,
+    ]);
+
+    foreach ($posts as $post) {
+        $content = $post->post_content;
+
+        // Match shortcode: [gravityform id="X"]
+        if (preg_match_all('/\[gravityform.*?id=["\']?(\d+)["\']?.*?\]/i', $content, $matches)) {
+            foreach ($matches[1] as $form_id) {
+                if (!isset($results[$form_id])) {
+                    $results[$form_id] = get_permalink($post->ID);
+                }
+            }
+        }
+
+        // Match Gutenberg block
+        if (preg_match_all('/"formId":\s*(\d+)/i', $content, $matches)) {
+            foreach ($matches[1] as $form_id) {
+                if (!isset($results[$form_id])) {
+                    $results[$form_id] = get_permalink($post->ID);
+                }
+            }
+        }
+    }
+
+    echo '<div class="wrap"><h1>' . esc_html__('GForm Gravity Forms Usage', 'gform-spam-slayer') . '</h1>';
+
+    if (empty($results)) {
+        echo '<p>' . esc_html__('No pages using Gravity Forms found.', 'gform-spam-slayer') . '</p>';
+        echo '</div>';
+        return;
+    }
+
+    echo '<table class="widefat fixed striped">';
+    echo '<thead>
+            <tr>
+                <th>' . esc_html__('Form ID', 'gform-spam-slayer') . '</th>
+                <th>' . esc_html__('Form Title', 'gform-spam-slayer') . '</th>
+                <th>' . esc_html__('Page Used', 'gform-spam-slayer') . '</th>
+                <th>' . esc_html__('Edit Form', 'gform-spam-slayer') . '</th>
+            </tr>
+          </thead><tbody>';
+
+    foreach ($results as $form_id => $url) {
+        $form_title = 'Unknown';
+
+        if (class_exists('GFAPI')) {
+            $form = \GFAPI::get_form($form_id);
+
+            if (!is_wp_error($form) && !empty($form) && isset($form['title'])) {
+                $form_title = $form['title'];
+            }
+        }
+
+        $edit_link = admin_url('admin.php?page=gf_edit_forms&id=' . intval($form_id));
+
+        echo '<tr>';
+        echo '<td>' . esc_html($form_id) . '</td>';
+        echo '<td>' . esc_html($form_title) . '</td>';
+        echo '<td><a href="' . esc_url($url) . '" target="_blank">' . esc_html($url) . '</a></td>';
+        echo '<td><a href="' . esc_url($edit_link) . '" target="_blank">' . esc_html__('Edit', 'gform-spam-slayer') . '</a></td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody></table>';
+    echo '</div>';
 }

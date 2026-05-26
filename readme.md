@@ -1,6 +1,17 @@
-# GForm Spam Slayer
+=== [WordPress plugin] GForm Spam Slayer ===
+Contributors: miiira
+Donate link: https://www.buymeacoffee.com/miiiira
+Tags: gravity forms, spam, cleanup, regex, gravity
+Requires at least: 5.0
+Tested up to: 7.0
+Stable tag: 1.4
+Requires PHP: 7.4
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries.
+
+== Description ==
 
 ![WordPress](https://img.shields.io/badge/WordPress-6.0+-111111?style=flat-square&logo=wordpress&logoColor=ffffff&labelColor=A93D21)
 ![PHP](https://img.shields.io/badge/PHP-7.4+-111111?style=flat-square&logo=php&logoColor=ffffff&labelColor=A93D21)
@@ -35,6 +46,7 @@ Perfect for:
 - Test scan mode
 - Bulk spam marking
 - Bulk spam deletion
+- Track which pages/posts are using Gravity Forms (shortcodes or Gutenberg blocks)
 - Lightweight admin interface
 - Native WordPress UI
 - No telemetry or tracking
@@ -91,6 +103,18 @@ git clone https://github.com/LeMiira/GForm-Spam-Slayer.git
 ---
 
 ## Changelog
+
+### 1.4 (2026-05-26)
+- **New Feature:** Restructured admin interface into a custom **GForm Tools** top-level menu containing GForm Spam Slayer and GForm Gravity Forms Usage submenu pages.
+- **Security Hardening & Stability:** Added checks on plugin activation, admin panels, and AJAX routines to gracefully handle scenarios when Gravity Forms is not installed or active, preventing any fatal errors.
+- **Coding Standards Compliance:** Resolved prefixing errors, added missing translator comment annotations, formatted raw error logs, and updated readme configurations to match WordPress repository requirements.
+
+### 1.3 (2026-05-26)
+- **New Feature:** Added a Buy Me a Coffee donate link directly to the plugin action links on the main Plugins directory screen.
+- **New Feature:** Added a Support card in the admin tools panel featuring links to GitHub Sponsors and Buy Me a Coffee.
+
+### 1.2 (2026-05-26)
+- **New Feature:** Added a Gravity Forms Usage page under the Tools management menu to see which posts and pages are using each Gravity Form (via shortcodes or Gutenberg blocks).
 
 ### 1.1 (2026-05-26)
 - **Security Fix:** Fixed critical bug where undefined `wp_error_log` function could cause fatal PHP crash when logging errors.
