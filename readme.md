@@ -14,11 +14,14 @@ Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries
 
 ## Description
 
-![WordPress](https://img.shields.io/badge/WordPress-6.0+-111111?style=flat-square&logo=wordpress&logoColor=ffffff&labelColor=A93D21)
-![PHP](https://img.shields.io/badge/PHP-7.4+-111111?style=flat-square&logo=php&logoColor=ffffff&labelColor=A93D21)
-![Gravity_Forms](https://img.shields.io/badge/Gravity_Forms-supported-111111?style=flat-square&logoColor=ffffff&labelColor=A93D21)
-![License](https://img.shields.io/badge/license-GPLv2+-111111?style=flat-square&logoColor=ffffff&labelColor=A93D21)
-![Status](https://img.shields.io/badge/status-lightweight-111111?style=flat-square&logoColor=ffffff&labelColor=A93D21)
+<p>
+  <img src="https://img.shields.io/badge/WordPress-%23117B85.svg?style=for-the-badge&logo=wordpress&logoColor=white" alt="WordPress" />
+  <img src="https://img.shields.io/badge/PHP-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
+  <img src="https://img.shields.io/badge/Gravity_Forms-%23FF6347.svg?style=for-the-badge&logo=wordpress&logoColor=white" alt="Gravity Forms" />
+  <img src="https://img.shields.io/badge/Vanilla_JS-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JS" />
+  <img src="https://img.shields.io/badge/CSS3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+  <img src="https://img.shields.io/badge/License_GPLv2-%2300599C.svg?style=for-the-badge&logo=open-source-initiative&logoColor=white" alt="License GPLv2" />
+</p>
 
 ---
 
