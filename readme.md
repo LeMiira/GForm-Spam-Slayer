@@ -1,4 +1,4 @@
-=== [WordPress plugin] GForm Spam Slayer ===
+=== GForm Spam Slayer ===
 Contributors: miiira
 Donate link: https://www.buymeacoffee.com/miiiira
 Tags: gravity forms, spam, cleanup, regex, gravity
