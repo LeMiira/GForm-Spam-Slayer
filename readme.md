@@ -1,4 +1,4 @@
-# GForm Spam Slayer
+# Spam Slayer for Gravity Forms
 
 Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries.
 
@@ -7,7 +7,7 @@ Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries
 - **Tags:** gravity forms, spam, cleanup, regex, gravity
 - **Requires at least:** 5.0
 - **Tested up to:** 7.0
-- **Stable tag:** 1.4
+- **Stable tag:** 1.5
 - **Requires PHP:** 7.4
 - **License:** GPLv2 or later
 - **License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -27,7 +27,7 @@ Advanced spam cleanup and regex-powered spam detection for Gravity Forms entries
 
 ## What Is It?
 
-**GForm Spam Slayer** is a lightweight cleanup utility for Gravity Forms that helps you detect, review, mark, and remove spam-like submissions already stored in your database.
+**Spam Slayer for Gravity Forms** is a lightweight cleanup utility for Gravity Forms that helps you detect, review, mark, and remove spam-like submissions already stored in your database.
 
 Instead of blocking spam during submission, the plugin works as a post-submission analysis tool using regex-powered pattern matching.
 
@@ -108,8 +108,13 @@ git clone https://github.com/LeMiira/GForm-Spam-Slayer.git
 
 ## Changelog
 
+### 1.5 (2026-06-01)
+- **Plugin Rename:** Renamed plugin to Spam Slayer for Gravity Forms to comply with WordPress directory trademark guidelines.
+- **UI Enhancement:** Completely overhauled the admin settings UI with a modern, card-based flexbox layout for better usability and aesthetics.
+- **Visual Assets:** Added new high-quality plugin icons and banners to the assets directory for the WordPress directory listing.
+
 ### 1.4 (2026-05-26)
-- **New Feature:** Restructured admin interface into a custom **GForm Tools** top-level menu containing GForm Spam Slayer and GForm Gravity Forms Usage submenu pages.
+- **New Feature:** Restructured admin interface into a custom **Spam Slayer Tools** top-level menu containing Spam Slayer for Gravity Forms and GF Usage submenu pages.
 - **Security Hardening & Stability:** Added checks on plugin activation, admin panels, and AJAX routines to gracefully handle scenarios when Gravity Forms is not installed or active, preventing any fatal errors.
 - **Coding Standards Compliance:** Resolved prefixing errors, added missing translator comment annotations, formatted raw error logs, and updated readme configurations to match WordPress repository requirements.
 

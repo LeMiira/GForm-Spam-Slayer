@@ -1,5 +1,5 @@
-/* Plugin: GForm Spam Slayer
-   Description: Styles for the GForm Spam Slayer plugin.
+/* Plugin: Spam Slayer for Gravity Forms
+   Description: Styles for the Spam Slayer for Gravity Forms plugin.
    Author: Mira
    Author URI: https://github.com/LeMiira
 */
@@ -19,30 +19,30 @@
 }
 
 /* Styles for entries */
-.gform-spam-slayer-entry {
+.spam-slayer-for-gravity-forms-entry {
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.gform-spam-slayer-spam-entry {
+.spam-slayer-for-gravity-forms-spam-entry {
     border: 1px solid red;
 }
 
-.gform-spam-slayer-spam-label {
+.spam-slayer-for-gravity-forms-spam-label {
     color: red;
 }
 
-.gform-spam-slayer-spam-count {
+.spam-slayer-for-gravity-forms-spam-count {
     color: red;
 }
 
-.gform-spam-slayer-spam-match {
+.spam-slayer-for-gravity-forms-spam-match {
     color: red;
 }
 
-.gform-spam-slayer-error, .error-message {
+.spam-slayer-for-gravity-forms-error, .error-message {
     color: red;
     font-weight: bold;
     padding: 10px;
@@ -52,7 +52,7 @@
     border-radius: 4px;
 }
 
-.gform-spam-slayer-warning {
+.spam-slayer-for-gravity-forms-warning {
     color: orange;
 }
 
@@ -68,7 +68,7 @@
 }
 
 /* Two-column Layout */
-.gform-spam-slayer-admin-container {
+.spam-slayer-for-gravity-forms-admin-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -76,18 +76,18 @@
     max-width: 1200px;
 }
 
-.gform-spam-slayer-main-content {
+.spam-slayer-for-gravity-forms-main-content {
     flex: 3;
     min-width: 300px;
 }
 
-.gform-spam-slayer-sidebar {
+.spam-slayer-for-gravity-forms-sidebar {
     flex: 1;
     min-width: 280px;
 }
 
 /* Support Card */
-.gform-spam-slayer-support-card {
+.spam-slayer-for-gravity-forms-support-card {
     background: #fff;
     border: 1px solid #ccd0d4;
     border-radius: 4px;
@@ -95,27 +95,27 @@
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
 }
 
-.gform-spam-slayer-support-card h3 {
+.spam-slayer-for-gravity-forms-support-card h3 {
     margin-top: 0;
     font-size: 1.2em;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
 
-.gform-spam-slayer-support-card p {
+.spam-slayer-for-gravity-forms-support-card p {
     font-size: 0.95em;
     color: #666;
     line-height: 1.5;
 }
 
-.gform-spam-slayer-support-buttons {
+.spam-slayer-for-gravity-forms-support-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 15px;
 }
 
-.gform-spam-slayer-btn {
+.spam-slayer-for-gravity-forms-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -129,28 +129,108 @@
     cursor: pointer;
 }
 
-.gform-spam-slayer-btn svg {
+.spam-slayer-for-gravity-forms-btn svg {
     flex-shrink: 0;
 }
 
-.gform-spam-slayer-btn-github {
+.spam-slayer-for-gravity-forms-btn-github {
     background-color: #ea4aaa;
     color: #fff !important;
     border: 1px solid #ea4aaa;
 }
 
-.gform-spam-slayer-btn-github:hover {
+.spam-slayer-for-gravity-forms-btn-github:hover {
     background-color: #d13091;
     border-color: #d13091;
 }
 
-.gform-spam-slayer-btn-bmc {
+.spam-slayer-for-gravity-forms-btn-bmc {
     background-color: #FF813F;
     color: #fff !important;
     border: 1px solid #FF813F;
 }
 
-.gform-spam-slayer-btn-bmc:hover {
+.spam-slayer-for-gravity-forms-btn-bmc:hover {
     background-color: #e56d2b;
     border-color: #e56d2b;
+}
+/* Enhanced Admin UI */
+.spam-slayer-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.spam-slayer-card h3 {
+    margin-top: 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 1.2em;
+    color: #2271b1;
+}
+
+.spam-slayer-field-group {
+    margin-bottom: 15px;
+}
+
+.spam-slayer-field-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #3c434a;
+}
+
+.spam-slayer-input-with-button {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.spam-slayer-pattern-preview {
+    background-color: #f6f7f7;
+    border-left: 4px solid #2271b1;
+    padding: 12px 15px;
+    margin-top: 15px;
+    border-radius: 0 4px 4px 0;
+}
+
+.spam-slayer-action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.spam-slayer-action-buttons .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    height: auto;
+}
+
+.spam-slayer-btn-danger {
+    background: #d63638 !important;
+    border-color: #d63638 !important;
+    color: #fff !important;
+}
+
+.spam-slayer-btn-danger:hover {
+    background: #b32d2e !important;
+    border-color: #b32d2e !important;
+}
+
+.spam-slayer-field-list {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    display: none;
+}
+.spam-slayer-field-list:not(:empty) {
+    display: block;
 }

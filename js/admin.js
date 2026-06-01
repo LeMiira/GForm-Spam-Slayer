@@ -7,11 +7,11 @@
 
             $.ajax({
                 type: 'POST',
-                url: gform_spam_slayer_params.ajax_url,
+                url: spam_slayer_for_gravity_forms_params.ajax_url,
                 data: {
-                    action: 'gform_spam_slayer_load_fields',
+                    action: 'spam_slayer_for_gravity_forms_load_fields',
                     form_id: formId,
-                    nonce: gform_spam_slayer_params.nonce
+                    nonce: spam_slayer_for_gravity_forms_params.nonce
                 },
                 success: function(response) {
                     if (response.success) {
@@ -40,7 +40,7 @@
 
             if (selectedPattern) {
                 var exampleText = '';
-                var patterns = gform_spam_slayer_params.regex_patterns;
+                var patterns = spam_slayer_for_gravity_forms_params.regex_patterns;
 
                 for (var key in patterns) {
                     if (patterns.hasOwnProperty(key)) {
@@ -51,11 +51,11 @@
                     }
                 }
 
-                exampleDiv.html('<b>' + gform_spam_slayer_params.i18n.example_text + '</b><br> ' + exampleText);
+                exampleDiv.html('<b>' + spam_slayer_for_gravity_forms_params.i18n.example_text + '</b><br> ' + exampleText);
             } else if (customPattern) {
-                exampleDiv.html('<b>' + gform_spam_slayer_params.i18n.this_regex + '</b> ' + customPattern);
+                exampleDiv.html('<b>' + spam_slayer_for_gravity_forms_params.i18n.this_regex + '</b> ' + customPattern);
             } else {
-                exampleDiv.html(gform_spam_slayer_params.i18n.select_pattern);
+                exampleDiv.html(spam_slayer_for_gravity_forms_params.i18n.select_pattern);
             }
         }
 
@@ -102,15 +102,15 @@
 
             $.ajax({
                 type: 'POST',
-                url: gform_spam_slayer_params.ajax_url,
+                url: spam_slayer_for_gravity_forms_params.ajax_url,
                 data: {
-                    action: 'gform_spam_slayer_process_form',
+                    action: 'spam_slayer_for_gravity_forms_process_form',
                     form_id: formId,
                     field_ids: fieldIds,
                     regex_pattern: regexPattern,
                     custom_pattern: customPattern,
                     sub_action: subAction,
-                    nonce: gform_spam_slayer_params.nonce
+                    nonce: spam_slayer_for_gravity_forms_params.nonce
                 },
                 success: function(response) {
                     loadingIndicator.hide();
