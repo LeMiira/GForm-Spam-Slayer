@@ -79,7 +79,7 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'spam_slayer_for_gravity_forms_plugin_action_links');
 function spam_slayer_for_gravity_forms_plugin_action_links($links) {
     $settings_link = '<a href="' . admin_url('admin.php?page=spam-slayer-tools') . '">' . __('Settings', 'spam-slayer-for-gravity-forms') . '</a>';
-    $donate_link = '<a href="https://www.buymeacoffee.com/miiiira" target="_blank" style="color: #FF813F; font-weight: bold;">' . __('Donate', 'spam-slayer-for-gravity-forms') . '</a>';
+    $donate_link = '<a href="https://github.com/sponsors/LeMiira" target="_blank" style="color: #C41E3A; font-weight: bold;">' . __('Donate', 'spam-slayer-for-gravity-forms') . '</a>';
     array_unshift($links, $settings_link, $donate_link);
     return $links;
 }
