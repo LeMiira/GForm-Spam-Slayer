@@ -10,7 +10,7 @@ Author: Mira
 Author URI: https://profiles.wordpress.org/miiira
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: gform-spam-slayer
+Text Domain: spam-slayer-for-gravity-forms
 Domain Path: /languages
 */
 
@@ -24,8 +24,8 @@ function spam_slayer_for_gravity_forms_activate() {
     if (!class_exists('GFAPI')) {
         deactivate_plugins(plugin_basename(__FILE__));
         wp_die(
-            esc_html__('Spam Slayer for Gravity Forms requires Gravity Forms to be installed and active.', 'gform-spam-slayer'),
-            esc_html__('Plugin Activation Error', 'gform-spam-slayer'),
+            esc_html__('Spam Slayer for Gravity Forms requires Gravity Forms to be installed and active.', 'spam-slayer-for-gravity-forms'),
+            esc_html__('Plugin Activation Error', 'spam-slayer-for-gravity-forms'),
             array('back_link' => true)
         );
     }
@@ -36,7 +36,7 @@ add_action('admin_notices', 'spam_slayer_for_gravity_forms_admin_notices');
 function spam_slayer_for_gravity_forms_admin_notices() {
     if (!class_exists('GFAPI')) {
         echo '<div class="notice notice-error"><p>';
-        echo esc_html__('Spam Slayer for Gravity Forms requires Gravity Forms to be installed and active.', 'gform-spam-slayer');
+        echo esc_html__('Spam Slayer for Gravity Forms requires Gravity Forms to be installed and active.', 'spam-slayer-for-gravity-forms');
         echo '</p></div>';
     }
 }
@@ -47,8 +47,8 @@ function spam_slayer_for_gravity_forms_admin_notices() {
 add_action('admin_menu', 'spam_slayer_for_gravity_forms_add_admin_menu');
 function spam_slayer_for_gravity_forms_add_admin_menu() {
     add_menu_page(
-        __('Spam Slayer Tools', 'gform-spam-slayer'),
-        __('Spam Slayer Tools', 'gform-spam-slayer'),
+        __('Spam Slayer Tools', 'spam-slayer-for-gravity-forms'),
+        __('Spam Slayer Tools', 'spam-slayer-for-gravity-forms'),
         'manage_options',
         'spam-slayer-tools',
         'spam_slayer_for_gravity_forms_render_admin_page',
@@ -58,8 +58,8 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
 
     add_submenu_page(
         'spam-slayer-tools',
-        __('Spam Slayer for Gravity Forms', 'gform-spam-slayer'),
-        __('Spam Slayer for Gravity Forms', 'gform-spam-slayer'),
+        __('Spam Slayer for Gravity Forms', 'spam-slayer-for-gravity-forms'),
+        __('Spam Slayer for Gravity Forms', 'spam-slayer-for-gravity-forms'),
         'manage_options',
         'spam-slayer-tools',
         'spam_slayer_for_gravity_forms_render_admin_page'
@@ -67,8 +67,8 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
 
     add_submenu_page(
         'spam-slayer-tools',
-        __('Usage', 'gform-spam-slayer'),
-        __('Usage', 'gform-spam-slayer'),
+        __('Usage', 'spam-slayer-for-gravity-forms'),
+        __('Usage', 'spam-slayer-for-gravity-forms'),
         'manage_options',
         'gf-usage',
         'spam_slayer_for_gravity_forms_render_gf_usage_page'
@@ -78,8 +78,8 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
 // Add settings and donate links to plugin action links
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'spam_slayer_for_gravity_forms_plugin_action_links');
 function spam_slayer_for_gravity_forms_plugin_action_links($links) {
-    $settings_link = '<a href="' . admin_url('admin.php?page=spam-slayer-tools') . '">' . __('Settings', 'gform-spam-slayer') . '</a>';
-    $donate_link = '<a href="https://github.com/sponsors/LeMiira" target="_blank" style="color: #C41E3A; font-weight: bold;">' . __('Donate', 'gform-spam-slayer') . '</a>';
+    $settings_link = '<a href="' . admin_url('admin.php?page=spam-slayer-tools') . '">' . __('Settings', 'spam-slayer-for-gravity-forms') . '</a>';
+    $donate_link = '<a href="https://github.com/sponsors/LeMiira" target="_blank" style="color: #C41E3A; font-weight: bold;">' . __('Donate', 'spam-slayer-for-gravity-forms') . '</a>';
     array_unshift($links, $settings_link, $donate_link);
     return $links;
 }
@@ -94,49 +94,49 @@ function spam_slayer_for_gravity_forms_get_regex_patterns() {
     return array(
         'gibberish_mix' => array(
             'pattern' => '/^[a-z0-9\s]{10,}$/i',
-            'description' => __('Letter-Number-Mix pattern (like asad5gbgfbdsz)', 'gform-spam-slayer'),
+            'description' => __('Letter-Number-Mix pattern (like asad5gbgfbdsz)', 'spam-slayer-for-gravity-forms'),
             'example' => 'asad5gbgfbdsz',
             'hit_test' => true
         ),
         'alphanumeric' => array(
             'pattern' => '/^[a-zA-Z0-9]{15,}$/',
-            'description' => __('Alphanumeric characters only, 15 or more characters', 'gform-spam-slayer'),
+            'description' => __('Alphanumeric characters only, 15 or more characters', 'spam-slayer-for-gravity-forms'),
             'example' => 'AbCdEfGhIjKlMnOp12345',
             'hit_test' => true
         ),
         'random_alphanumeric' => array(
             'pattern' => '/^[a-zA-Z0-9]{8,}$/',
-            'description' => __('Random Alphanumeric, 8 or more characters', 'gform-spam-slayer'),
+            'description' => __('Random Alphanumeric, 8 or more characters', 'spam-slayer-for-gravity-forms'),
             'example' => 'FzMXhddP',
             'hit_test' => true
         ),
         'random_alphanumeric_uppercase' => array(
             'pattern' => '/^[A-Z0-9]{8,}$/',
-            'description' => __('Random Uppercase Alphanumeric, 8+ chars', 'gform-spam-slayer'),
+            'description' => __('Random Uppercase Alphanumeric, 8+ chars', 'spam-slayer-for-gravity-forms'),
             'example' => 'FMXHPOTW',
             'hit_test' => true
         ),
         'long_word' => array(
             'pattern' => '/\b\w{20,}\b/',
-            'description' => __('Matches any word longer than 20 characters', 'gform-spam-slayer'),
+            'description' => __('Matches any word longer than 20 characters', 'spam-slayer-for-gravity-forms'),
             'example' => 'ThisIsAVeryLongWordToDetect',
             'hit_test' => true
         ),
         'short_random_alphanumeric' => array(
             'pattern' => '/^[a-zA-Z0-9]{10,12}$/',
-            'description' => __('Short Random Alphanumeric, 10-12 characters', 'gform-spam-slayer'),
+            'description' => __('Short Random Alphanumeric, 10-12 characters', 'spam-slayer-for-gravity-forms'),
             'example' => 'FzMXhddPOt',
             'hit_test' => true
         ),
         'short_random_alphanumeric_upeer' => array(
             'pattern' => '/^[A-Z0-9]{10,12}$/',
-            'description' => __('Short Random, 10-12 Uppercase Alphanumeric characters', 'gform-spam-slayer'),
+            'description' => __('Short Random, 10-12 Uppercase Alphanumeric characters', 'spam-slayer-for-gravity-forms'),
             'example' => 'CDDJHFJEKE',
             'hit_test' => true
         ),
         'email_like' => array(
             'pattern' => '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
-            'description' => __('Basic email-like pattern', 'gform-spam-slayer'),
+            'description' => __('Basic email-like pattern', 'spam-slayer-for-gravity-forms'),
             'example' => 'test@example.com',
             'hit_test' => false
         ),
@@ -176,9 +176,9 @@ function spam_slayer_for_gravity_forms_enqueue_admin_scripts($hook) {
         'nonce' => wp_create_nonce('spamslayergf-nonce'),
         'regex_patterns' => spam_slayer_for_gravity_forms_get_regex_patterns(),
         'i18n' => array(
-            'example_text' => __('Example text using this pattern:', 'gform-spam-slayer'),
-            'this_regex' => __('This Regex:', 'gform-spam-slayer'),
-            'select_pattern' => __('Please select or enter a pattern to view an example.', 'gform-spam-slayer'),
+            'example_text' => __('Example text using this pattern:', 'spam-slayer-for-gravity-forms'),
+            'this_regex' => __('This Regex:', 'spam-slayer-for-gravity-forms'),
+            'select_pattern' => __('Please select or enter a pattern to view an example.', 'spam-slayer-for-gravity-forms'),
         )
     ));
 }
@@ -191,19 +191,19 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
 
     if (!class_exists('GFAPI')) {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Spam Slayer for Gravity Forms - Spam Management', 'gform-spam-slayer') . '</h1>';
-        echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'gform-spam-slayer') . '</p></div>';
+        echo '<h1>' . esc_html__('Spam Slayer for Gravity Forms - Spam Management', 'spam-slayer-for-gravity-forms') . '</h1>';
+        echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'spam-slayer-for-gravity-forms') . '</p></div>';
         echo '</div>';
         return;
     }
 
     echo '<div class="wrap">';
-    echo '<h1>' . esc_html__('Spam Slayer for Gravity Forms - Spam Management', 'gform-spam-slayer') . '</h1>';
-    echo '<p>' . esc_html__('Use this tool to detect and manage spam entries in Gravity Forms.', 'gform-spam-slayer') . '</p>';
+    echo '<h1>' . esc_html__('Spam Slayer for Gravity Forms - Spam Management', 'spam-slayer-for-gravity-forms') . '</h1>';
+    echo '<p>' . esc_html__('Use this tool to detect and manage spam entries in Gravity Forms.', 'spam-slayer-for-gravity-forms') . '</p>';
 
     $forms = GFAPI::get_forms();
     if (empty($forms)) {
-        echo '<p>' . esc_html__('No forms available. Please create a form first.', 'gform-spam-slayer') . '</p>';
+        echo '<p>' . esc_html__('No forms available. Please create a form first.', 'spam-slayer-for-gravity-forms') . '</p>';
         echo '</div>';
         return;
     }
@@ -225,9 +225,9 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
 
     <form id="spam-slayer-for-gravity-forms-form" method="post" class="spam-slayer-settings-form">
         <div class="spam-slayer-card">
-            <h3><?php esc_html_e('1. Select Form & Fields', 'gform-spam-slayer'); ?></h3>
+            <h3><?php esc_html_e('1. Select Form & Fields', 'spam-slayer-for-gravity-forms'); ?></h3>
             <div class="spam-slayer-field-group">
-                <label for="form_id"><?php esc_html_e('Select Form:', 'gform-spam-slayer'); ?></label>
+                <label for="form_id"><?php esc_html_e('Select Form:', 'spam-slayer-for-gravity-forms'); ?></label>
                 <div class="spam-slayer-input-with-button">
                     <select name="form_id" id="form_id" class="regular-text">
                         <?php foreach ($forms as $form): ?>
@@ -236,23 +236,23 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="button" id="load-fields-btn" class="button"><?php esc_html_e('Load Fields', 'gform-spam-slayer'); ?></button>
+                    <button type="button" id="load-fields-btn" class="button"><?php esc_html_e('Load Fields', 'spam-slayer-for-gravity-forms'); ?></button>
                 </div>
                 <div id="field-list" class="spam-slayer-field-list"></div>
             </div>
 
             <div class="spam-slayer-field-group">
-                <label for="field_ids"><?php esc_html_e('Fields to Check (comma-separated field IDs):', 'gform-spam-slayer'); ?></label>
-                <input type="text" name="field_ids" id="field_ids" class="large-text" placeholder="<?php esc_attr_e('e.g., 1.3, 1.6', 'gform-spam-slayer'); ?>" value="<?php echo esc_attr($stored_field_ids); ?>">
+                <label for="field_ids"><?php esc_html_e('Fields to Check (comma-separated field IDs):', 'spam-slayer-for-gravity-forms'); ?></label>
+                <input type="text" name="field_ids" id="field_ids" class="large-text" placeholder="<?php esc_attr_e('e.g., 1.3, 1.6', 'spam-slayer-for-gravity-forms'); ?>" value="<?php echo esc_attr($stored_field_ids); ?>">
             </div>
         </div>
 
         <div class="spam-slayer-card">
-            <h3><?php esc_html_e('2. Define Spam Pattern', 'gform-spam-slayer'); ?></h3>
+            <h3><?php esc_html_e('2. Define Spam Pattern', 'spam-slayer-for-gravity-forms'); ?></h3>
             <div class="spam-slayer-field-group">
-                <label for="regex_pattern"><?php esc_html_e('Regex Pattern:', 'gform-spam-slayer'); ?></label>
+                <label for="regex_pattern"><?php esc_html_e('Regex Pattern:', 'spam-slayer-for-gravity-forms'); ?></label>
                 <select name="regex_pattern" id="regex_pattern" class="large-text">
-                    <option value=""><?php esc_html_e('Custom Pattern', 'gform-spam-slayer'); ?></option>
+                    <option value=""><?php esc_html_e('Custom Pattern', 'spam-slayer-for-gravity-forms'); ?></option>
                     <?php foreach ($regex_patterns as $key => $pattern): ?>
                         <option value="<?php echo esc_attr($pattern['pattern']); ?>" <?php selected($stored_regex_pattern, $pattern['pattern']); ?>>
                             <?php echo esc_html($pattern['description']); ?>
@@ -262,8 +262,8 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
             </div>
             
             <div class="spam-slayer-field-group">
-                <label for="custom_pattern"><?php esc_html_e('Custom Regex (if selected above):', 'gform-spam-slayer'); ?></label>
-                <input type="text" name="custom_pattern" id="custom_pattern" class="large-text" placeholder="<?php esc_attr_e('Enter custom regex pattern', 'gform-spam-slayer'); ?>" value="<?php echo esc_attr($stored_custom_pattern); ?>">
+                <label for="custom_pattern"><?php esc_html_e('Custom Regex (if selected above):', 'spam-slayer-for-gravity-forms'); ?></label>
+                <input type="text" name="custom_pattern" id="custom_pattern" class="large-text" placeholder="<?php esc_attr_e('Enter custom regex pattern', 'spam-slayer-for-gravity-forms'); ?>" value="<?php echo esc_attr($stored_custom_pattern); ?>">
             </div>
 
             <div id="pattern-example" class="spam-slayer-pattern-preview">
@@ -272,7 +272,7 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
                 $effective_pattern = !empty($stored_custom_pattern) ? $stored_custom_pattern : $stored_regex_pattern;
 
                 if (!empty($effective_pattern)) {
-                    echo '<p><strong>' . esc_html__('Pattern Example:', 'gform-spam-slayer') . '</strong></p>';
+                    echo '<p><strong>' . esc_html__('Pattern Example:', 'spam-slayer-for-gravity-forms') . '</strong></p>';
                     $matched = false;
                     foreach ($regex_patterns as $pattern) {
                         if ($pattern['pattern'] == $stored_regex_pattern || $pattern['pattern'] == $stored_custom_pattern) {
@@ -283,52 +283,52 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
                     if (isset($matched) && !empty($matched)) {
                         echo '<p>' . esc_html($matched) . '</p>';
                     } else {
-                        echo '<p>' . esc_html__('Enter custom regex and test to see matches here', 'gform-spam-slayer') . '</p>';
+                        echo '<p>' . esc_html__('Enter custom regex and test to see matches here', 'spam-slayer-for-gravity-forms') . '</p>';
                     }
                 } else {
-                    echo '<p><strong>' . esc_html__('Select a pattern or enter a custom one', 'gform-spam-slayer') . '</strong></p>';
+                    echo '<p><strong>' . esc_html__('Select a pattern or enter a custom one', 'spam-slayer-for-gravity-forms') . '</strong></p>';
                 }
                 ?>
             </div>
         </div>
 
         <div class="spam-slayer-card spam-slayer-actions-card">
-            <h3><?php esc_html_e('3. Actions', 'gform-spam-slayer'); ?></h3>
+            <h3><?php esc_html_e('3. Actions', 'spam-slayer-for-gravity-forms'); ?></h3>
             <div class="spam-slayer-action-buttons">
                 <button type="button" class="button button-primary button-hero main-button" data-action="find_spam">
-                    <span class="dashicons dashicons-search"></span> <?php esc_html_e('Find Spam (Full Scan)', 'gform-spam-slayer'); ?>
+                    <span class="dashicons dashicons-search"></span> <?php esc_html_e('Find Spam (Full Scan)', 'spam-slayer-for-gravity-forms'); ?>
                 </button>
                 <button type="button" class="button button-secondary button-hero main-button" data-action="test_spam">
-                    <span class="dashicons dashicons-admin-plugins"></span> <?php esc_html_e('Test Scan (10 Entries)', 'gform-spam-slayer'); ?>
+                    <span class="dashicons dashicons-admin-plugins"></span> <?php esc_html_e('Test Scan (10 Entries)', 'spam-slayer-for-gravity-forms'); ?>
                 </button>
                 <button type="button" class="button button-secondary button-hero main-button" data-action="mark_spam">
-                    <span class="dashicons dashicons-flag"></span> <?php esc_html_e('Mark Spam Entries', 'gform-spam-slayer'); ?>
+                    <span class="dashicons dashicons-flag"></span> <?php esc_html_e('Mark Spam Entries', 'spam-slayer-for-gravity-forms'); ?>
                 </button>
                 <button type="button" class="button button-hero main-button spam-slayer-btn-danger" data-action="delete_spam">
-                    <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete Spam Entries', 'gform-spam-slayer'); ?>
+                    <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete Spam Entries', 'spam-slayer-for-gravity-forms'); ?>
                 </button>
             </div>
         </div>
 
     </form>
         <div id="debug-results" style="display:none;"></div>
-    <div id="loading-indicator" style="display:none;"><?php esc_html_e('Loading...', 'gform-spam-slayer'); ?></div>
+    <div id="loading-indicator" style="display:none;"><?php esc_html_e('Loading...', 'spam-slayer-for-gravity-forms'); ?></div>
     <?php
     echo '</div>'; // End .spam-slayer-for-gravity-forms-main-content
 
     echo '<div class="spam-slayer-for-gravity-forms-sidebar">';
     ?>
     <div class="spam-slayer-for-gravity-forms-support-card">
-        <h3><?php esc_html_e('Support the Developer', 'gform-spam-slayer'); ?></h3>
-        <p><?php esc_html_e('If Spam Slayer for Gravity Forms is saving you time and keeping your database clean, please consider supporting my work.', 'gform-spam-slayer'); ?></p>
+        <h3><?php esc_html_e('Support the Developer', 'spam-slayer-for-gravity-forms'); ?></h3>
+        <p><?php esc_html_e('If Spam Slayer for Gravity Forms is saving you time and keeping your database clean, please consider supporting my work.', 'spam-slayer-for-gravity-forms'); ?></p>
         <div class="spam-slayer-for-gravity-forms-support-buttons">
             <a href="https://github.com/sponsors/lemiira" target="_blank" class="spam-slayer-for-gravity-forms-btn spam-slayer-for-gravity-forms-btn-github">
                 <svg class="icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path fill-rule="evenodd" d="M8 1.482c1.6-1.518 4.5-1.18 5.923.491 1.422 1.67 1.242 4.416-.395 6.006L8 14.102 2.472 7.98c-1.637-1.59-1.817-4.336-.395-6.006C3.5 2.296 6.4 1.958 8 1.482zm0 11.238l4.908-5.437c1.176-1.144 1.3-3.036.197-4.335-1.122-1.319-3.344-1.503-4.553-.338L8 3.256 7.448 2.61c-1.21-1.165-3.43-0.98-4.553.338-1.103 1.3-0.98 3.19.197 4.335L8 12.72z"/></svg>
-                <?php esc_html_e('GitHub Sponsor', 'gform-spam-slayer'); ?>
+                <?php esc_html_e('GitHub Sponsor', 'spam-slayer-for-gravity-forms'); ?>
             </a>
             <a href="https://www.buymeacoffee.com/miiiira" target="_blank" class="spam-slayer-for-gravity-forms-btn spam-slayer-for-gravity-forms-btn-bmc">
                 <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3zm1 5h-3V5h3v3zM2 19h18v2H2v-2z"/></svg>
-                <?php esc_html_e('Buy Me a Coffee', 'gform-spam-slayer'); ?>
+                <?php esc_html_e('Buy Me a Coffee', 'spam-slayer-for-gravity-forms'); ?>
             </a>
         </div>
     </div>
@@ -342,39 +342,39 @@ function spam_slayer_for_gravity_forms_render_admin_page() {
 add_action('wp_ajax_spam_slayer_for_gravity_forms_load_fields', 'spam_slayer_for_gravity_forms_load_fields');
 function spam_slayer_for_gravity_forms_load_fields() {
     if (!class_exists('GFAPI')) {
-        wp_send_json_error(__('Gravity Forms is not installed or active.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Gravity Forms is not installed or active.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     // Check nonce and permissions
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(__('Insufficient permissions.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Insufficient permissions.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'spamslayergf-nonce')) {
-        wp_send_json_error(__('Invalid security token.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Invalid security token.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     if (!isset($_POST['form_id'])) {
-        wp_send_json_error(__('Invalid request', 'gform-spam-slayer'));
+        wp_send_json_error(__('Invalid request', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     $form_id = intval($_POST['form_id']);
     $form = GFAPI::get_form($form_id);
     if (!$form) {
-        wp_send_json_error(__('Form not found', 'gform-spam-slayer'));
+        wp_send_json_error(__('Form not found', 'spam-slayer-for-gravity-forms'));
     }
 
     if (empty($form['fields'])) {
-        wp_send_json_error(__('No fields found in this form.', 'gform-spam-slayer'));
+        wp_send_json_error(__('No fields found in this form.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     $fields = $form['fields'];
-    $output = '<h4>' . esc_html__('Available Fields:', 'gform-spam-slayer') . '</h4><ul>';
+    $output = '<h4>' . esc_html__('Available Fields:', 'spam-slayer-for-gravity-forms') . '</h4><ul>';
 
     foreach ($fields as $field) {
         // Output the main field
@@ -408,18 +408,18 @@ function spam_slayer_for_gravity_forms_load_fields() {
 add_action('wp_ajax_spam_slayer_for_gravity_forms_process_form', 'spam_slayer_for_gravity_forms_process_form');
 function spam_slayer_for_gravity_forms_process_form() {
     if (!class_exists('GFAPI')) {
-        wp_send_json_error(__('Gravity Forms is not installed or active.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Gravity Forms is not installed or active.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     // Verify nonce and user capabilities
     if (!current_user_can('manage_options')) {
-        wp_send_json_error(__('Insufficient permissions.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Insufficient permissions.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'spamslayergf-nonce')) {
-        wp_send_json_error(__('Invalid security token.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Invalid security token.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
@@ -434,17 +434,17 @@ function spam_slayer_for_gravity_forms_process_form() {
 
     // Validation
     if (empty($fields_to_check)) {
-        wp_send_json_error(__('Error: Please select fields to check for spam.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Error: Please select fields to check for spam.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     if (empty($effective_pattern)) {
-        wp_send_json_error(__('Error: Please enter a custom regex or select a pattern.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Error: Please enter a custom regex or select a pattern.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
     if (@preg_match($effective_pattern, '') === false) {
-        wp_send_json_error(__('Error: The regular expression pattern is invalid.', 'gform-spam-slayer'));
+        wp_send_json_error(__('Error: The regular expression pattern is invalid.', 'spam-slayer-for-gravity-forms'));
         return;
     }
 
@@ -461,7 +461,7 @@ function spam_slayer_for_gravity_forms_process_form() {
             $result = spam_slayer_for_gravity_forms_process_spam_deletion($form_id);
             break;
         default:
-            wp_send_json_error(__('Invalid action.', 'gform-spam-slayer'));
+            wp_send_json_error(__('Invalid action.', 'spam-slayer-for-gravity-forms'));
             return;
     }
 
@@ -502,7 +502,7 @@ function spam_slayer_for_gravity_forms_process_spam_finding( $form_id, $fields_t
         return '<p class="spam-slayer-for-gravity-forms-error">Error: Regex pattern must be a string.</p>';
     }
 
-    $output = '<h3>' . esc_html__( 'Spam Detection Results:', 'gform-spam-slayer' ) . '</h3>';
+    $output = '<h3>' . esc_html__( 'Spam Detection Results:', 'spam-slayer-for-gravity-forms' ) . '</h3>';
 
     $spam_count = 0;
     $total_checked = 0;
@@ -525,15 +525,15 @@ function spam_slayer_for_gravity_forms_process_spam_finding( $form_id, $fields_t
         );
 
         if ( empty( $entries ) ) {
-            return '<div class="spam-slayer-for-gravity-forms-notice"><p>' . esc_html__('There are no entries yet for this form. Please add some entries first.', 'gform-spam-slayer') . '</p></div>';
+            return '<div class="spam-slayer-for-gravity-forms-notice"><p>' . esc_html__('There are no entries yet for this form. Please add some entries first.', 'spam-slayer-for-gravity-forms') . '</p></div>';
         }
     } catch (Exception $e) {
-        return '<div class="spam-slayer-for-gravity-forms-error"><p>' . esc_html__('Error retrieving entries. Please try again.', 'gform-spam-slayer') . '</p></div>';
+        return '<div class="spam-slayer-for-gravity-forms-error"><p>' . esc_html__('Error retrieving entries. Please try again.', 'spam-slayer-for-gravity-forms') . '</p></div>';
     }
 
     $form = GFAPI::get_form($form_id);
     if (!$form) {
-        return '<div class="spam-slayer-for-gravity-forms-error"><p>' . esc_html__('Error: Form not found.', 'gform-spam-slayer') . '</p></div>';
+        return '<div class="spam-slayer-for-gravity-forms-error"><p>' . esc_html__('Error: Form not found.', 'spam-slayer-for-gravity-forms') . '</p></div>';
     }
 
     foreach ( $entries as $entry ) {
@@ -612,9 +612,9 @@ function spam_slayer_for_gravity_forms_process_spam_finding( $form_id, $fields_t
     }
 
     /* translators: %d: number of checked entries */
-    $output .= '<p>' . sprintf( esc_html__( 'Total entries checked: %d', 'gform-spam-slayer' ), $total_checked ) . '</p>';
+    $output .= '<p>' . sprintf( esc_html__( 'Total entries checked: %d', 'spam-slayer-for-gravity-forms' ), $total_checked ) . '</p>';
     /* translators: %d: number of spam entries found */
-    $output .= '<p class="spam-slayer-for-gravity-forms-spam-count">' . sprintf( esc_html__( 'Total spam entries found: %d', 'gform-spam-slayer' ), $spam_count ) . '</p>';
+    $output .= '<p class="spam-slayer-for-gravity-forms-spam-count">' . sprintf( esc_html__( 'Total spam entries found: %d', 'spam-slayer-for-gravity-forms' ), $spam_count ) . '</p>';
 
     return $output;
 }
@@ -640,14 +640,14 @@ function spam_slayer_for_gravity_forms_process_spam_marking( $form_id, $fields_t
 
     // Basic validation for form_id
     if ( ! is_int( $form_id ) || $form_id <= 0 ) {
-        return '<p style="color:red;">' . esc_html__( 'Error: Invalid Form ID.', 'gform-spam-slayer' ) . '</p>';
+        return '<p style="color:red;">' . esc_html__( 'Error: Invalid Form ID.', 'spam-slayer-for-gravity-forms' ) . '</p>';
     }
 
     // Get all entry IDs for the specified form that are *not* already marked as spam
     $entry_ids = GFAPI::get_entry_ids( $form_id, [ 'status' => 'active', 'field_filters' => [] ] ); // Get only active entries
 
     if ( empty( $entry_ids ) ) {
-        return '<p>' . esc_html__( 'No entries found to mark as spam.', 'gform-spam-slayer' ) . '</p>';
+        return '<p>' . esc_html__( 'No entries found to mark as spam.', 'spam-slayer-for-gravity-forms' ) . '</p>';
     }
 
     // Chunk the entry IDs into smaller batches
@@ -658,7 +658,7 @@ function spam_slayer_for_gravity_forms_process_spam_marking( $form_id, $fields_t
             try {
                 if(!is_numeric($entry_id)) {
                     /* translators: %s: Entry ID that was invalid */
-                    throw new Exception(sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
+                    throw new Exception(sprintf(__('Invalid entry ID: %s', 'spam-slayer-for-gravity-forms'), $entry_id));
                 }
                 GFAPI::update_entry_property( $entry_id, 'status', 'spam' );
                 $marked_count++;
@@ -675,7 +675,7 @@ function spam_slayer_for_gravity_forms_process_spam_marking( $form_id, $fields_t
     } // outer foreach (chunks)
 
     /* translators: %d: number of entries marked as spam */
-    return '<p>' . sprintf( esc_html__( 'Successfully marked %d entries as spam.', 'gform-spam-slayer' ), $marked_count ) . '</p>';
+    return '<p>' . sprintf( esc_html__( 'Successfully marked %d entries as spam.', 'spam-slayer-for-gravity-forms' ), $marked_count ) . '</p>';
 }
 
 /**
@@ -696,14 +696,14 @@ function spam_slayer_for_gravity_forms_process_spam_deletion( $form_id ) {
 
     // Basic validation for form_id
     if ( ! is_int( $form_id ) || $form_id <= 0 ) {
-        return '<p style="color:red;">' . esc_html__( 'Error: Invalid Form ID.', 'gform-spam-slayer' ) . '</p>';
+        return '<p style="color:red;">' . esc_html__( 'Error: Invalid Form ID.', 'spam-slayer-for-gravity-forms' ) . '</p>';
     }
 
     // Get all entry IDs for the specified form that are currently marked as spam
     $entry_ids = GFAPI::get_entry_ids( $form_id, [ 'status' => 'spam', 'field_filters' => [] ] ); // Get spam entries
 
     if ( empty( $entry_ids ) ) {
-        return '<p>' . esc_html__( 'No spam entries found to delete.', 'gform-spam-slayer' ) . '</p>';
+        return '<p>' . esc_html__( 'No spam entries found to delete.', 'spam-slayer-for-gravity-forms' ) . '</p>';
     }
 
     // Chunk the entry IDs into smaller batches
@@ -714,7 +714,7 @@ function spam_slayer_for_gravity_forms_process_spam_deletion( $form_id ) {
             try {
                 if(!is_numeric($entry_id)) {
                     /* translators: %s: Entry ID that was invalid */
-                    throw new Exception(sprintf(__('Invalid entry ID: %s', 'gform-spam-slayer'), $entry_id));
+                    throw new Exception(sprintf(__('Invalid entry ID: %s', 'spam-slayer-for-gravity-forms'), $entry_id));
                 }
                 GFAPI::delete_entry( $entry_id );
                 $deleted_count++;
@@ -731,7 +731,7 @@ function spam_slayer_for_gravity_forms_process_spam_deletion( $form_id ) {
     } // outer foreach (chunks)
 
     /* translators: %d: number of deleted spam entries */
-    return '<p>' . sprintf( esc_html__( 'Successfully deleted %d spam entries.', 'gform-spam-slayer' ), $deleted_count ) . '</p>';
+    return '<p>' . sprintf( esc_html__( 'Successfully deleted %d spam entries.', 'spam-slayer-for-gravity-forms' ), $deleted_count ) . '</p>';
 }
 
 function spam_slayer_for_gravity_forms_add_result(&$results, $form_id, $post_url, $post_status) {
@@ -789,8 +789,8 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
 
     if (!class_exists('GFAPI')) {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Pages which uses gravity forms', 'gform-spam-slayer') . '</h1>';
-        echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'gform-spam-slayer') . '</p></div>';
+        echo '<h1>' . esc_html__('Pages which uses gravity forms', 'spam-slayer-for-gravity-forms') . '</h1>';
+        echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'spam-slayer-for-gravity-forms') . '</p></div>';
         echo '</div>';
         return;
     }
@@ -830,10 +830,10 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
         }
     }
 
-    echo '<div class="wrap"><h1>' . esc_html__('Pages which uses gravity forms', 'gform-spam-slayer') . '</h1>';
+    echo '<div class="wrap"><h1>' . esc_html__('Pages which uses gravity forms', 'spam-slayer-for-gravity-forms') . '</h1>';
 
     if (empty($results)) {
-        echo '<p>' . esc_html__('No pages using Gravity Forms found.', 'gform-spam-slayer') . '</p>';
+        echo '<p>' . esc_html__('No pages using Gravity Forms found.', 'spam-slayer-for-gravity-forms') . '</p>';
         echo '</div>';
         return;
     }
@@ -841,10 +841,10 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
     echo '<table class="widefat fixed striped">';
     echo '<thead>
             <tr>
-                <th>' . esc_html__('Form ID', 'gform-spam-slayer') . '</th>
-                <th>' . esc_html__('Form Title', 'gform-spam-slayer') . '</th>
-                <th>' . esc_html__('Page Used', 'gform-spam-slayer') . '</th>
-                <th>' . esc_html__('Edit Form', 'gform-spam-slayer') . '</th>
+                <th>' . esc_html__('Form ID', 'spam-slayer-for-gravity-forms') . '</th>
+                <th>' . esc_html__('Form Title', 'spam-slayer-for-gravity-forms') . '</th>
+                <th>' . esc_html__('Page Used', 'spam-slayer-for-gravity-forms') . '</th>
+                <th>' . esc_html__('Edit Form', 'spam-slayer-for-gravity-forms') . '</th>
             </tr>
           </thead><tbody>';
 
@@ -863,14 +863,14 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
 
         foreach ($pages as $page) {
             $url = $page['url'];
-            $status_label = $page['status'] === 'publish' ? esc_html__('Public', 'gform-spam-slayer') : esc_html__('Private', 'gform-spam-slayer');
+            $status_label = $page['status'] === 'publish' ? esc_html__('Public', 'spam-slayer-for-gravity-forms') : esc_html__('Private', 'spam-slayer-for-gravity-forms');
             $status_color = $page['status'] === 'publish' ? '#46b450' : '#dc3232';
             
             echo '<tr>';
             echo '<td>' . esc_html($form_id) . '</td>';
             echo '<td>' . esc_html($form_title) . '</td>';
             echo '<td><a href="' . esc_url($url) . '" target="_blank">' . esc_html($url) . '</a> <span style="color: ' . esc_attr($status_color) . '; font-size: 0.9em; margin-left: 5px; font-weight: bold;">[' . esc_html($status_label) . ']</span></td>';
-            echo '<td><a href="' . esc_url($edit_link) . '" target="_blank">' . esc_html__('Edit', 'gform-spam-slayer') . '</a></td>';
+            echo '<td><a href="' . esc_url($edit_link) . '" target="_blank">' . esc_html__('Edit', 'spam-slayer-for-gravity-forms') . '</a></td>';
             echo '</tr>';
         }
     }
