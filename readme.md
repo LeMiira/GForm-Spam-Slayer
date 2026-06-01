@@ -112,7 +112,7 @@ git clone https://github.com/LeMiira/GForm-Spam-Slayer.git
 - **Plugin Rename:** Renamed plugin to Spam Slayer for Gravity Forms to comply with WordPress directory trademark guidelines.
 - **UI Enhancement:** Completely overhauled the admin settings UI with a modern, card-based flexbox layout for better usability and aesthetics.
 - **Visual Assets:** Added new high-quality plugin icons and banners to the assets directory for the WordPress directory listing.
-- **Improved Detection:** Updated "GF Usage" page title to "Pages which uses gravity forms" and improved detection to find forms used inside Elementor widgets (e.g. bdt-gravity-forms).
+- **Improved Detection:** Updated "GF Usage" page title to "Pages which uses gravity forms" and improved detection to find forms used inside Elementor widgets (e.g. bdt-gravity-forms) across both public and private pages.
 
 ### 1.4 (2026-05-26)
 - **New Feature:** Restructured admin interface into a custom **Spam Slayer Tools** top-level menu containing Spam Slayer for Gravity Forms and Usage submenu pages.

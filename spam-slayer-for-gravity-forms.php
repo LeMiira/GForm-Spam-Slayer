@@ -734,7 +734,20 @@ function spam_slayer_for_gravity_forms_process_spam_deletion( $form_id ) {
     return '<p>' . sprintf( esc_html__( 'Successfully deleted %d spam entries.', 'spam-slayer-for-gravity-forms' ), $deleted_count ) . '</p>';
 }
 
-function spam_slayer_for_gravity_forms_find_gf_in_elementor($data, &$results, $post_url) {
+function spam_slayer_for_gravity_forms_add_result(&$results, $form_id, $post_url, $post_status) {
+    if (!isset($results[$form_id])) {
+        $results[$form_id] = [];
+    }
+    // Avoid duplicates
+    foreach ($results[$form_id] as $res) {
+        if ($res['url'] === $post_url) {
+            return;
+        }
+    }
+    $results[$form_id][] = ['url' => $post_url, 'status' => $post_status];
+}
+
+function spam_slayer_for_gravity_forms_find_gf_in_elementor($data, &$results, $post_url, $post_status) {
     if (is_array($data)) {
         if (isset($data['widgetType']) && (strpos($data['widgetType'], 'gravity') !== false || strpos($data['widgetType'], 'gform') !== false)) {
             if (isset($data['settings'])) {
@@ -748,9 +761,7 @@ function spam_slayer_for_gravity_forms_find_gf_in_elementor($data, &$results, $p
                 }
                 
                 if ($form_id && is_numeric($form_id)) {
-                    if (!isset($results[$form_id])) {
-                        $results[$form_id] = $post_url;
-                    }
+                    spam_slayer_for_gravity_forms_add_result($results, $form_id, $post_url, $post_status);
                 }
             }
         }
@@ -759,9 +770,7 @@ function spam_slayer_for_gravity_forms_find_gf_in_elementor($data, &$results, $p
             if (isset($data['settings']['shortcode'])) {
                 if (preg_match_all('/\[gravityform.*?id=["\']?(\d+)["\']?.*?\]/i', $data['settings']['shortcode'], $matches)) {
                     foreach ($matches[1] as $form_id) {
-                        if (!isset($results[$form_id])) {
-                            $results[$form_id] = $post_url;
-                        }
+                        spam_slayer_for_gravity_forms_add_result($results, $form_id, $post_url, $post_status);
                     }
                 }
             }
@@ -769,7 +778,7 @@ function spam_slayer_for_gravity_forms_find_gf_in_elementor($data, &$results, $p
 
         foreach ($data as $value) {
             if (is_array($value)) {
-                spam_slayer_for_gravity_forms_find_gf_in_elementor($value, $results, $post_url);
+                spam_slayer_for_gravity_forms_find_gf_in_elementor($value, $results, $post_url, $post_status);
             }
         }
     }
@@ -790,7 +799,7 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
 
     $posts = get_posts([
         'post_type'   => 'any',
-        'post_status' => 'publish',
+        'post_status' => ['publish', 'private'],
         'numberposts' => -1,
     ]);
 
@@ -800,18 +809,14 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
         // Match shortcode: [gravityform id="X"]
         if (preg_match_all('/\[gravityform.*?id=["\']?(\d+)["\']?.*?\]/i', $content, $matches)) {
             foreach ($matches[1] as $form_id) {
-                if (!isset($results[$form_id])) {
-                    $results[$form_id] = get_permalink($post->ID);
-                }
+                spam_slayer_for_gravity_forms_add_result($results, $form_id, get_permalink($post->ID), $post->post_status);
             }
         }
 
         // Match Gutenberg block
         if (preg_match_all('/"formId":\s*(\d+)/i', $content, $matches)) {
             foreach ($matches[1] as $form_id) {
-                if (!isset($results[$form_id])) {
-                    $results[$form_id] = get_permalink($post->ID);
-                }
+                spam_slayer_for_gravity_forms_add_result($results, $form_id, get_permalink($post->ID), $post->post_status);
             }
         }
 
@@ -820,7 +825,7 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
         if (!empty($elementor_data)) {
             $data = json_decode($elementor_data, true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
-                spam_slayer_for_gravity_forms_find_gf_in_elementor($data, $results, get_permalink($post->ID));
+                spam_slayer_for_gravity_forms_find_gf_in_elementor($data, $results, get_permalink($post->ID), $post->post_status);
             }
         }
     }
@@ -843,7 +848,7 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
             </tr>
           </thead><tbody>';
 
-    foreach ($results as $form_id => $url) {
+    foreach ($results as $form_id => $pages) {
         $form_title = 'Unknown';
 
         if (class_exists('GFAPI')) {
@@ -856,12 +861,18 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
 
         $edit_link = admin_url('admin.php?page=gf_edit_forms&id=' . intval($form_id));
 
-        echo '<tr>';
-        echo '<td>' . esc_html($form_id) . '</td>';
-        echo '<td>' . esc_html($form_title) . '</td>';
-        echo '<td><a href="' . esc_url($url) . '" target="_blank">' . esc_html($url) . '</a></td>';
-        echo '<td><a href="' . esc_url($edit_link) . '" target="_blank">' . esc_html__('Edit', 'spam-slayer-for-gravity-forms') . '</a></td>';
-        echo '</tr>';
+        foreach ($pages as $page) {
+            $url = $page['url'];
+            $status_label = $page['status'] === 'publish' ? esc_html__('Public', 'spam-slayer-for-gravity-forms') : esc_html__('Private', 'spam-slayer-for-gravity-forms');
+            $status_color = $page['status'] === 'publish' ? '#46b450' : '#dc3232';
+            
+            echo '<tr>';
+            echo '<td>' . esc_html($form_id) . '</td>';
+            echo '<td>' . esc_html($form_title) . '</td>';
+            echo '<td><a href="' . esc_url($url) . '" target="_blank">' . esc_html($url) . '</a> <span style="color: ' . esc_attr($status_color) . '; font-size: 0.9em; margin-left: 5px; font-weight: bold;">[' . esc_html($status_label) . ']</span></td>';
+            echo '<td><a href="' . esc_url($edit_link) . '" target="_blank">' . esc_html__('Edit', 'spam-slayer-for-gravity-forms') . '</a></td>';
+            echo '</tr>';
+        }
     }
 
     echo '</tbody></table>';
