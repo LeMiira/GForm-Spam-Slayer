@@ -67,8 +67,8 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
 
     add_submenu_page(
         'spam-slayer-tools',
-        __('GF Usage', 'spam-slayer-for-gravity-forms'),
-        __('GF Usage', 'spam-slayer-for-gravity-forms'),
+        __('Usage', 'spam-slayer-for-gravity-forms'),
+        __('Usage', 'spam-slayer-for-gravity-forms'),
         'manage_options',
         'gf-usage',
         'spam_slayer_for_gravity_forms_render_gf_usage_page'
@@ -734,12 +734,53 @@ function spam_slayer_for_gravity_forms_process_spam_deletion( $form_id ) {
     return '<p>' . sprintf( esc_html__( 'Successfully deleted %d spam entries.', 'spam-slayer-for-gravity-forms' ), $deleted_count ) . '</p>';
 }
 
+function spam_slayer_for_gravity_forms_find_gf_in_elementor($data, &$results, $post_url) {
+    if (is_array($data)) {
+        if (isset($data['widgetType']) && (strpos($data['widgetType'], 'gravity') !== false || strpos($data['widgetType'], 'gform') !== false)) {
+            if (isset($data['settings'])) {
+                $form_id = null;
+                if (isset($data['settings']['gravity_form_id'])) {
+                    $form_id = $data['settings']['gravity_form_id'];
+                } elseif (isset($data['settings']['form_id'])) {
+                    $form_id = $data['settings']['form_id'];
+                } elseif (isset($data['settings']['id'])) {
+                    $form_id = $data['settings']['id'];
+                }
+                
+                if ($form_id && is_numeric($form_id)) {
+                    if (!isset($results[$form_id])) {
+                        $results[$form_id] = $post_url;
+                    }
+                }
+            }
+        }
+        
+        if (isset($data['widgetType']) && $data['widgetType'] === 'shortcode') {
+            if (isset($data['settings']['shortcode'])) {
+                if (preg_match_all('/\[gravityform.*?id=["\']?(\d+)["\']?.*?\]/i', $data['settings']['shortcode'], $matches)) {
+                    foreach ($matches[1] as $form_id) {
+                        if (!isset($results[$form_id])) {
+                            $results[$form_id] = $post_url;
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($data as $value) {
+            if (is_array($value)) {
+                spam_slayer_for_gravity_forms_find_gf_in_elementor($value, $results, $post_url);
+            }
+        }
+    }
+}
+
 function spam_slayer_for_gravity_forms_render_gf_usage_page() {
     if (!current_user_can('manage_options')) return;
 
     if (!class_exists('GFAPI')) {
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('GF Usage', 'spam-slayer-for-gravity-forms') . '</h1>';
+        echo '<h1>' . esc_html__('Pages which uses gravity forms', 'spam-slayer-for-gravity-forms') . '</h1>';
         echo '<div class="notice notice-error inline"><p>' . esc_html__('Gravity Forms is not installed or active.', 'spam-slayer-for-gravity-forms') . '</p></div>';
         echo '</div>';
         return;
@@ -773,9 +814,18 @@ function spam_slayer_for_gravity_forms_render_gf_usage_page() {
                 }
             }
         }
+
+        // Elementor Data Check
+        $elementor_data = get_post_meta($post->ID, '_elementor_data', true);
+        if (!empty($elementor_data)) {
+            $data = json_decode($elementor_data, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($data)) {
+                spam_slayer_for_gravity_forms_find_gf_in_elementor($data, $results, get_permalink($post->ID));
+            }
+        }
     }
 
-    echo '<div class="wrap"><h1>' . esc_html__('GF Usage', 'spam-slayer-for-gravity-forms') . '</h1>';
+    echo '<div class="wrap"><h1>' . esc_html__('Pages which uses gravity forms', 'spam-slayer-for-gravity-forms') . '</h1>';
 
     if (empty($results)) {
         echo '<p>' . esc_html__('No pages using Gravity Forms found.', 'spam-slayer-for-gravity-forms') . '</p>';

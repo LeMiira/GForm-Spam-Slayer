@@ -73,9 +73,10 @@ Restructured menus to Spam Slayer Tools, added activation/runtime safety checks 
 * Renamed plugin to Spam Slayer for Gravity Forms to comply with WordPress directory trademark guidelines.
 * Completely overhauled the admin settings UI with a modern, card-based flexbox layout for better usability and aesthetics.
 * Added new high-quality plugin icons and banners to the assets directory for the WordPress directory listing.
+* Updated "GF Usage" page title to "Pages which uses gravity forms" and improved detection to find forms used in Elementor widgets (e.g. bdt-gravity-forms).
 
 = 1.4 (2026-05-26) =
-* Restructured admin interface into a custom Spam Slayer Tools top-level menu containing Spam Slayer for Gravity Forms and GF Usage submenu pages.
+* Restructured admin interface into a custom Spam Slayer Tools top-level menu containing Spam Slayer for Gravity Forms and Usage submenu pages.
 * Added checks on plugin activation, admin panels, and AJAX routines to gracefully handle scenarios when Gravity Forms is not installed or active, preventing any fatal errors.
 * Resolved prefixing errors, added missing translator comment annotations, formatted raw error logs, and updated readme configurations to match WordPress repository requirements.
 
