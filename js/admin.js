@@ -1,7 +1,7 @@
 (function($) {
     $(document).ready(function() {
         // Function to load fields via AJAX
-        window.loadFields = function(formId) {
+        function loadFields(formId) {
             const fieldList = $('#field-list');
             fieldList.removeClass('active');
 

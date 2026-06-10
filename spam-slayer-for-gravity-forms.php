@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Spam Slayer for Gravity Forms
-Plugin URI: https://github.com/LeMiira/spam-slayer-for-gravity-forms
+Plugin URI: https://github.com/LeMiira/GForm-Spam-Slayer
 Description: A WordPress plugin to detect and manage spam entries in Gravity Forms
 Version: 1.5
 Requires at least: 5.0
@@ -50,27 +50,27 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
         __('Spam Slayer Tools', 'spam-slayer-for-gravity-forms'),
         __('Spam Slayer Tools', 'spam-slayer-for-gravity-forms'),
         'manage_options',
-        'spam-slayer-tools',
+        'spam-slayer-for-gravity-forms',
         'spam_slayer_for_gravity_forms_render_admin_page',
         'dashicons-admin-tools',
         80
     );
 
     add_submenu_page(
-        'spam-slayer-tools',
+        'spam-slayer-for-gravity-forms',
         __('Spam Slayer for Gravity Forms', 'spam-slayer-for-gravity-forms'),
         __('Spam Slayer for Gravity Forms', 'spam-slayer-for-gravity-forms'),
         'manage_options',
-        'spam-slayer-tools',
+        'spam-slayer-for-gravity-forms',
         'spam_slayer_for_gravity_forms_render_admin_page'
     );
 
     add_submenu_page(
-        'spam-slayer-tools',
+        'spam-slayer-for-gravity-forms',
         __('Usage', 'spam-slayer-for-gravity-forms'),
         __('Usage', 'spam-slayer-for-gravity-forms'),
         'manage_options',
-        'gf-usage',
+        'spam-slayer-for-gravity-forms-usage',
         'spam_slayer_for_gravity_forms_render_gf_usage_page'
     );
 }
@@ -78,7 +78,7 @@ function spam_slayer_for_gravity_forms_add_admin_menu() {
 // Add settings and donate links to plugin action links
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'spam_slayer_for_gravity_forms_plugin_action_links');
 function spam_slayer_for_gravity_forms_plugin_action_links($links) {
-    $settings_link = '<a href="' . admin_url('admin.php?page=spam-slayer-tools') . '">' . __('Settings', 'spam-slayer-for-gravity-forms') . '</a>';
+    $settings_link = '<a href="' . admin_url('admin.php?page=spam-slayer-for-gravity-forms') . '">' . __('Settings', 'spam-slayer-for-gravity-forms') . '</a>';
     $donate_link = '<a href="https://github.com/sponsors/LeMiira" target="_blank" style="color: #C41E3A; font-weight: bold;">' . __('Donate', 'spam-slayer-for-gravity-forms') . '</a>';
     array_unshift($links, $settings_link, $donate_link);
     return $links;
@@ -146,7 +146,7 @@ function spam_slayer_for_gravity_forms_get_regex_patterns() {
 // Enqueue admin scripts
 add_action('admin_enqueue_scripts', 'spam_slayer_for_gravity_forms_enqueue_admin_scripts');
 function spam_slayer_for_gravity_forms_enqueue_admin_scripts($hook) {
-    if ('toplevel_page_spam-slayer-tools' !== $hook && 'spam-slayer-tools_page_spam-slayer-tools' !== $hook) {
+    if ('toplevel_page_spam-slayer-for-gravity-forms' !== $hook && 'spam-slayer-for-gravity-forms_page_spam-slayer-for-gravity-forms' !== $hook) {
         return;
     }
 
